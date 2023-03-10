@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "morgen-d34db"
+  },
+  "targets": {
+    "morgen-d34db": {
+      "hosting": {
+        "scheduler": [
+          "morgen-docs"
+        ]
+      }
+    }
+  }
+}

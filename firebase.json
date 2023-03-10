@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "site": "morgen-docs",
+    "public": "out",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

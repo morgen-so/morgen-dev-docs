@@ -1,22 +1,16 @@
 {
-  "name": "nextra-docs-template",
+  "name": "morgen-dev-docs",
   "version": "0.0.1",
-  "description": "Nextra docs template",
+  "description": "Morgen Dev Docs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next build && next export",
+    "deploy": "npm run export && firebase deploy --only hosting:morgen-docs"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shuding/nextra-docs-template.git"
-  },
-  "author": "Shu Ding <g@shud.in>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/shuding/nextra-docs-template/issues"
-  },
-  "homepage": "https://github.com/shuding/nextra-docs-template#readme",
+  "author": "Morgen AG",
+  "license": "UNLICENSED",
   "dependencies": {
     "next": "^13.0.6",
     "nextra": "latest",
