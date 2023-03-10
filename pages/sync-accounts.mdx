@@ -1,0 +1,43 @@
+# Accounts
+
+As an API gateway, the Morgen Sync service needs to be able to access the accounts of the users of the
+services it aggregates. This is done by using OAuth2.0 in most cases. The Morgen Sync service is registered
+as an application with the services it aggregates. To operate on a third-party account (e.g. create an event via
+Google Calendar), the user must first grant the Morgen Sync service access to the account. This is done by the
+user being redirected to the third-party service's login page. After logging in, the user is redirected back to
+the Morgen Sync service. The Morgen Sync service then has access to the account and can operate on it.
+
+## Supported services
+The Morgen Sync service currently supports the following services:
+
+### Calendars
+* Google Calendar / Google Workspace
+* Office 365
+* Microsoft Exchange
+* Outlook.com
+* CalDAV (including iCloud, Nextcloud, ownCloud, etc.)
+
+### Contacts
+* Google Contacts / Google Workspace
+* Office 365
+
+## Videoconferencing
+* Google Meet / Google Workspace
+* Microsoft Teams
+* Zoom
+
+## How to connect an account
+
+To initiate the authorization process on behalf of a user, you can use the following endpoint:
+
+```
+curl --request POST \
+     --url https://gateway.morgen.so/integrations/:providerId/oauth/authorize \
+     --header 'accept: application/json' \
+     --header 'Authorization: Bearer JWT_USER_TOKEN'
+```
+
+The `providerId` is the ID of the provider you want to connect an account for. The `JWT_USER_TOKEN` is the
+JWT token of the user you want to connect an account for (see [Authentication](/sync-authentication)).
+
+

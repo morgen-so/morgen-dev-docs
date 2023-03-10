@@ -1,0 +1,31 @@
+{
+
+  "index": "Introduction",
+  "-- Sync": {
+    "type": "separator",
+    "title": "Sync Service API"
+  },
+  "sync-authentication": "Authentication",
+  "sync-accounts": "Accounts",
+  "sync-calendars": "Calendars",
+  "sync-events": "Events",
+  "sync-videoconferencing": "Videoconferencing",
+  "-- Morgen ": {
+    "type": "separator",
+    "title": "Morgen API"
+  },
+  "-- More ": {
+    "type": "separator",
+    "title": "More info"
+  },
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "mailto:connect@mrogen.so",
+    "newWindow": true
+  }
+}
