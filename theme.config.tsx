@@ -6,18 +6,18 @@ const config: DocsThemeConfig = {
   project: {
     link: 'https://morgen.so',
   },
-  chat: {
-    link: 'https://discord.gg/KNaeNhZ9yf',
-  },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+  // chat: {
+  //   link: 'https://discord.gg/KNaeNhZ9yf',
+  // },
+  docsRepositoryBase: 'https://github.com/morgen-so/morgen-dev-docs',
   footer: {
     text: 'Morgen Docs - Morgen AG © 2020 - 2023 All rights reserved.',
   },
   sidebar: {
-    titleComponent({title, type}) {
+    titleComponent({ title, type }) {
       if (type === 'separator') {
         return (
-            <div className="nx-font-medium">{title}</div>
+          <div className="nx-font-medium">{title}</div>
         )
       }
       return <>{title}</>

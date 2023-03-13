@@ -24,17 +24,17 @@ a map between the Sync API User ID to your application's user ID.
 
 Each request to the API must be authenticated with a valid [JWT Token](https://jwt.io/introduction/) _on behalf of the final user_.
 
-The JWT Token must be signed with the Client API Key of the application that is making the request.
-The Client API Key is provided to you by the Morgen team.
+The JWT Token must be signed with the Client Secret of the application that is making the request.
+The Client Secret, together with a unique Client ID, must be provided to you by Morgen.
 
 Here is how you can generate a JWT token in NodeJS. You can use any JWT library to generate the token.
 Find more information about JWT in the [JWT.io documentation](https://jwt.io/introduction/).
 
 ```js
 const jwt = require('jsonwebtoken');
-    const { MORGEN_CLIENT_SECRET } = process.env;
+    const { MORGEN_CLIENT_ID, MORGEN_CLIENT_SECRET } = process.env;
     const payload = {
-        "iss": "morgen-client-id",
+        "iss": MORGEN_CLIENT_ID,
         "sub": "user-id",
         // Optional payload fields
         "given_name": "John",
@@ -47,7 +47,8 @@ const jwt = require('jsonwebtoken');
     });
 ```
 
-The `iss` and `sub` fields are required. The `iss` field must be the Morgen Client Secret of the application that is making the request.
+The `iss` and `sub` fields are required. The `iss` field must be the Morgen Client ID
+of the application that is making the request.
 The `sub` field must be the User ID of the user that is making the request.
 
 The `given_name`, `middle_name`, `family_name` and `email` fields are optional.
