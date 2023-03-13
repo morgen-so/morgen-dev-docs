@@ -1,5 +1,4 @@
 {
-
   "index": "Introduction",
   "-- Sync": {
     "type": "separator",
@@ -18,6 +17,7 @@
     "type": "separator",
     "title": "More info"
   },
+  "comparison-with-nylas": "Comparison with Nylas",
   "about": {
     "title": "About",
     "type": "page"

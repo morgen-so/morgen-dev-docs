@@ -1,0 +1,43 @@
+import { Callout } from 'nextra-theme-docs'
+
+
+# Comparison with Nylas
+
+Morgen APIs work differently than Nylas APIs in many ways.
+If you are familiar with Nylas, you may find it helpful to compare Morgen APIs with Nylas APIs.
+
+
+## End Users
+Nylas does not have the concept of end user. When an end user is redirected
+to Nylas to connect their account, they are redirected to a page where they
+can select which account they want to connect. Nylas then connects to that
+account and returns an access token to you (the application). 
+The application can then use that access token to operate on the connected account on behalf of
+the end user. This means that you need to store the access token(s) for each user account in the your database,
+associating those tokens with your internal User ID.
+
+
+**Morgen associates each authenticated account to a User ID.** You will not receive
+an access token for each connected account. Instead, you only need the
+User ID, your Client ID and your Client Secret to generate a JWT token that
+allows you (the application) to list the accounts an end user has connected, 
+and to operate on those accounts on behalf of the end user.
+
+<Callout emoji="💡">
+  **The User ID is provided by you (the application).** Most likely, you want
+  to use your internal User ID to avoid having to maintein a mapping between
+    your internal User ID and the Morgen User ID.
+</Callout>
+
+## No Sync Policy
+Nylas requires an application to specify a sync policy, indicating how many days of data history Nylas will sync. Only events
+within the specified sync policy will be returned by the Nylas APIs.
+
+**Morgen does not have a sync policy.** In fact, Morgen does not sync calendar events at all.
+When you list the events for a connected account, you _must_ specify 
+time range to retrieve events for. Events will be retrieved on the fly from the
+calendar provider, map the events to the Morgen event model, and return the
+events to you.
+
+
+
