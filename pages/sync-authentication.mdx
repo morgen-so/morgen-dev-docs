@@ -1,3 +1,5 @@
+import { Callout } from 'nextra-theme-docs'
+
 # Authentication
 
 The Morgen Sync service does not store Users explicitly, however it associates all resources that belong to the same person
@@ -55,6 +57,12 @@ The `given_name`, `middle_name`, `family_name` and `email` fields are optional.
 
 Make sure to set the `expiresIn` option to a reasonable value, e.g. 10 minutes. We recommend to generate a new token for every request,
 but you can also use a longer expiration time if you want to reuse the token for multiple requests.
+
+<Callout type="warning" emoji="⚠️">
+  Your Client Secret grants access to all resources associated with the Client ID. 
+  It is paramount that you keep your Client Secret confidential and do not share it with anyone.
+  In particular, do not include the Client Secret in your client-side code.
+</Callout>
 
 ## Authenticate requests
 

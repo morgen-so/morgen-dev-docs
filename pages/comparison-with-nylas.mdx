@@ -23,11 +23,21 @@ User ID, your Client ID and your Client Secret to generate a JWT token that
 allows you (the application) to list the accounts an end user has connected, 
 and to operate on those accounts on behalf of the end user.
 
-<Callout emoji="💡">
+<Callout type="info" emoji="💡">
   **The User ID is provided by you (the application).** Most likely, you want
   to use your internal User ID to avoid having to maintein a mapping between
     your internal User ID and the Morgen User ID.
 </Callout>
+
+## Authorization Flow
+Nylas authorization is in two steps. 
+First, you need to redirect the end user to a page where they can select which account they want to connect.
+Then, Nylas redirects the end user back to your application with an authorization code. Finally, you need to
+exchange the authorization code for an access token for the connected account.
+
+Morgen does not require you to exchange a code for an access token. Instead, you can
+generate a JWT token that allows you (the application) to list the accounts an end user has connected,
+and to operate on those accounts on behalf of the end user.
 
 ## No Sync Policy
 Nylas requires an application to specify a sync policy, indicating how many days of data history Nylas will sync. Only events
@@ -38,6 +48,14 @@ When you list the events for a connected account, you _must_ specify
 time range to retrieve events for. Events will be retrieved on the fly from the
 calendar provider, map the events to the Morgen event model, and return the
 events to you.
+
+<Callout type="warning" emoji="⚠️">
+  Because Morgen does not keeps a copy of the user calendar events in its database,
+  the API response time is likely to be slower than Nylas and bounded by 
+    the response time of the calendar provider. For user facing applications,
+    you may want to consider caching the events in your application and follow a 
+    [stale-while-revalidate strategy](https://tools.ietf.org/html/rfc5861).
+</Callout>
 
 
 
