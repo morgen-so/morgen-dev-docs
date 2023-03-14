@@ -19,7 +19,7 @@ associating those tokens with your internal User ID.
 
 **Morgen associates each authenticated account to a User ID.** You will not receive
 an access token for each connected account. Instead, you only need the
-User ID, your Client ID and your Client Secret to generate a JWT token that
+User ID, your Client ID and your Client Secret to generate a JWT that
 allows you (the application) to list the accounts an end user has connected, 
 and to operate on those accounts on behalf of the end user.
 
@@ -29,14 +29,14 @@ and to operate on those accounts on behalf of the end user.
     your internal User ID and the Morgen User ID.
 </Callout>
 
-## Authorization Flow
+## Different authorization flow
 Nylas authorization is in two steps. 
 First, you need to redirect the end user to a page where they can select which account they want to connect.
 Then, Nylas redirects the end user back to your application with an authorization code. Finally, you need to
 exchange the authorization code for an access token for the connected account.
 
 Morgen does not require you to exchange a code for an access token. Instead, you can
-generate a JWT token that allows you (the application) to list the accounts an end user has connected,
+generate a JWT that allows you (the application) to list the accounts an end user has connected,
 and to operate on those accounts on behalf of the end user.
 
 ## No Sync Policy
@@ -56,6 +56,16 @@ events to you.
     you may want to consider caching the events in your application and follow a 
     [stale-while-revalidate strategy](https://tools.ietf.org/html/rfc5861).
 </Callout>
+
+## Variable-length IDs
+Nylas returns fixed-length, Nylas-generated IDs for the returned entities (accounts, calendars and events).
+
+Morgen does not generate IDs for the returned entities. The IDs, even though should be treated as opaque,
+are generated based on the provider external IDs and thus can vary significantly in length.
+For example, IDs for events from Office 365 are longer than IDs of Google Calendar events.
+If you store IDs in your database, you should not make any assumption about the length of the IDs.
+
+
 
 
 

@@ -2,7 +2,7 @@
   "index": "Introduction",
   "-- Sync": {
     "type": "separator",
-    "title": "Sync Service API"
+    "title": "Sync Service"
   },
   "sync-authentication": "Authentication",
   "sync-accounts": "Accounts",

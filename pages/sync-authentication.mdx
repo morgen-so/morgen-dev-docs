@@ -2,8 +2,8 @@ import { Callout } from 'nextra-theme-docs'
 
 # Authentication
 
-The Morgen Sync service does not store Users explicitly, however it associates all resources that belong to the same person
- to a User ID (externally provided). The User ID must be included in a JWT Token, which is used to authenticate the user
+The Morgen Sync Service does not store Users explicitly, however it associates all resources that belong to the same person
+ to a User ID (externally provided). The User ID must be included in a JWT, which is used to authenticate the user
     and authorize every request to the API.
 
 In order to start using the Sync API on behalf of one of your users, you must have the following information:
@@ -22,14 +22,14 @@ We recommend to use the same ID as the one used in your application, otherwise y
 a map between the Sync API User ID to your application's user ID.
 
 
-## Generate a JWT Token
+## Generate a Json Web Token
 
-Each request to the API must be authenticated with a valid [JWT Token](https://jwt.io/introduction/) _on behalf of the final user_.
+Each request to the API must be authenticated with a valid [Json Web Token (JWT)](https://jwt.io/introduction/) _on behalf of the final user_.
 
-The JWT Token must be signed with the Client Secret of the application that is making the request.
+The JWT must be signed with the Client Secret of the application that is making the request.
 The Client Secret, together with a unique Client ID, must be provided to you by Morgen.
 
-Here is how you can generate a JWT token in NodeJS. You can use any JWT library to generate the token.
+Here is how you can generate a JWT in NodeJS. You can use any JWT library to generate the token.
 Find more information about JWT in the [JWT.io documentation](https://jwt.io/introduction/).
 
 ```js
@@ -59,19 +59,20 @@ Make sure to set the `expiresIn` option to a reasonable value, e.g. 10 minutes. 
 but you can also use a longer expiration time if you want to reuse the token for multiple requests.
 
 <Callout type="warning" emoji="⚠️">
-  Your Client Secret grants access to all resources associated with the Client ID. 
+  Your Client Secret grants access to all resources associated with your Client ID. 
   It is paramount that you keep your Client Secret confidential and do not share it with anyone.
-  In particular, do not include the Client Secret in your client-side code.
+  In particular, do not include the Client Secret in your client-side code, not even as part of 
+  a bundle like an iOS or Android app.
 </Callout>
 
 ## Authenticate requests
 
-The JWT Token must be passed in the `Authorization` header of the request, using the `Bearer` authentication scheme. For example:
+The JWT must be passed in the `Authorization` header of the request, using the `Bearer` authentication scheme. For example:
 
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-Requests with an invalid or expired JWT Token will be rejected with a `401 Unauthorized` response.
+Requests with an invalid or expired JWT will be rejected with a `401 Unauthorized` response.
 Requests trying to access resources that do not belong to the user will be rejected with a `403 Forbidden` response.
 

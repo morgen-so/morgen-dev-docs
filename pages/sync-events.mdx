@@ -7,7 +7,7 @@ Morgen maps Calendar Events from different providers to
 a common data model, inspired by the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
 Some differences with the JSCalendar standard are documented below.
 
-## List Events
+## List events
 
 Morgen offers an endpoint to list events from a given calendar.
 Events are retrieved in a given time window, and recurring events 
@@ -16,14 +16,13 @@ Deleted or cancelled events are not included in the response.
 
 ```
 curl --request GET \
-     --url https://sync.morgen.so/v1/events/list?accountId=<ACCOUNT_ID>&calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME> \
+     --url https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME> \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
 ```
 
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
-| `accountId` | Query | - | Yes | An account ID to retrieve events from. |
 | `calendarIds` | Query | - | Yes | Comma-separated list of calendar IDs to retrieve events from. Notice that these calendars must all belong to the same account identified by `accountId`. |
 | `start` | Query | - | Yes | Start of the time window in ISO 8601 format, e.g. `2023-03-01T00:00:00Z` |
 | `end` | Query | - | Yes | End of the time window in ISO 8601 format, e.g. `2023-04-01T00:00:00Z`. This must be greater than `start`. The interval cannot be longer than 6 months. It is recommanded to retrieve no more than 2 months of events at the same time.  |
@@ -114,7 +113,7 @@ Morgen returns some additional fields for convenience and to provide more inform
 - `baseEventId`: The provider ID of the base event the event belongs to. This is the ID of the recurring event for recurring events, and the ID of the event itself for non-recurring events.
 - `masterBaseEventId`: The provider ID of the master base event the event belongs to. This is the ID of the master recurring event for recurring events, and will not be returned for non-recurring events.
 
-## Create an Event
+## Create an event
 
 Morgen offers an endpoint to create events in a given calendar.
 The event is created in the calendar of the account identified by the `accountId` parameter.
@@ -124,12 +123,12 @@ curl --request POST \
      --url https://sync.morgen.so/v1/events/create \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
-     --data '{"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, ...eventfields}'
+     --data '{"calendarId": <CALENDAR_ID>, ...eventfields}'
 ```
 
-The fields `accountId` and `calendarId` are mandatory. Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
+The field `calendarId` is mandatory. Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
 
-## Update an Event
+## Update an event
 
 The following endpoint can be used to update an event in a given calendar.
 
@@ -138,14 +137,13 @@ curl --request POST \
      --url https://sync.morgen.so/v1/events/update?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
-     --data '{"id": <EVENT_ID>, "accountId": <ACCOUNT_ID>, ...eventfields}'
+     --data '{"id": <EVENT_ID>, ...eventfields}'
 ```
 
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
 | `seriesUpdateMode` | Query | `single` | No | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). This parameter has no effect on non-recurring events. |
 | `id` | Body | - | Yes | The ID of the event to update. |
-| `accountId` | Body | - | Yes | The ID of the account the event belongs to. |
 
 Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
 
@@ -153,7 +151,7 @@ Other fields of an event are described in the [JSCalendar standard](https://data
   Currently `seriesUpdateMode` only supports the default value (`single`).
 </Callout>
 
-## Delete an Event
+## Delete an event
 
 The following endpoint can be used to update an event in a given calendar.
 
@@ -162,21 +160,20 @@ curl --request POST \
      --url https://sync.morgen.so/v1/events/delete?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
-     --data '{"id": <EVENT_ID>, "accountId": <ACCOUNT_ID>}'
+     --data '{"id": <EVENT_ID>}'
 ```
 
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
 | `seriesUpdateMode` | Query | `single` | No | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). This parameter has no effect on non-recurring events. |
 | `id` | Body | - | Yes | The ID of the event to update. |
-| `accountId` | Body | - | Yes | The ID of the account the event belongs to. |
 
 
 <Callout type="warning" emoji="⚠️">
   Currently `seriesUpdateMode` only supports the default value (`single`).
 </Callout>
 
-## RSVP to an Event
+## RSVP to an event
 
 An event can be accepted, declined or tentatively accepted by the user. 
 This is done by sending a POST request to the following endpoints:
@@ -186,7 +183,7 @@ curl --request POST \
      --url https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
-      --data '{"id": <EVENT_ID>, "accountId": <ACCOUNT_ID>}'
+      --data '{"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>}'
 ```
 
 The last segment of the URL marked with `<RSVP_ACTION>` defines the action to be performed. 
@@ -199,7 +196,8 @@ Possible values are:
 | :-----    | :---- | :---- | :---- | :---- |
 | `seriesUpdateMode` | Query | `single` | No | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). This parameter has no effect on non-recurring events. |
 | `id` | Body | - | Yes | The ID of the event to update. |
-| `accountId` | Body | - | Yes | The ID of the account the event belongs to. |
+| `comment` | Body | - | No | A comment to be sent to the organizer. |
+| `notifyOrganizer` | Body | `true` | No | Whether to send the response to the organizer. |
 
 <Callout type="warning" emoji="⚠️">
   Currently `seriesUpdateMode` only supports the default value (`single`).

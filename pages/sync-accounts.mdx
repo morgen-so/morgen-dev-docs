@@ -1,11 +1,11 @@
 # Accounts
 
-As an API gateway, the Morgen Sync service needs to be able to access the accounts of the users of the
+As an API gateway, the Morgen Sync Service needs to be able to access the accounts of the users of the
 services it aggregates. This is done by using OAuth2.0 in most cases. The Morgen Sync service is registered
 as an application with the services it aggregates. To operate on a third-party account (e.g. create an event via
 Google Calendar), the user must first grant the Morgen Sync service access to the account. This is done by the
 user being redirected to the third-party service's login page. After logging in, the user is redirected back to
-the Morgen Sync service. The Morgen Sync service then has access to the account and can operate on it.
+the Morgen Sync Service. The Morgen Sync service then has access to the account and can operate on it.
 
 ## Supported services
 The Morgen Sync service currently supports the following services:
@@ -35,7 +35,7 @@ The Morgen Sync service currently supports the following services:
 | Microsoft Teams            | `teams`      | 
 | Zoom                       | `zoom` |
 
-## How to Connect an Account
+## How to connect an account
 
 To initiate the authorization process on behalf of a user, you first retrieve the provider Authorization URL 
 from Morgen, then you redirect the user browser to that URL.
@@ -66,7 +66,7 @@ Morgen replies with an `authorizationUrl` as below in this example:
 
 You can then redirect the user to the provided URL where the user will be able to authenticate with the provider.
 
-## How to Disconnect an Account
+## How to disconnect an account
 
 To disconnect an account, issue an authorized POST request as follows:
 
@@ -82,7 +82,7 @@ curl --request POST \
 | `accountId` | Path | - | Yes | The id of the account to disconnect. |
 
 
-## How to List the Connected Accounts of a User
+## How to list the connected accounts of a user
 
 To list the connected accounts of a user, issue an authorized GET request as follows:
 
@@ -123,7 +123,7 @@ Here is an example response:
 }
 ```
 
-## How to List the Available Providers
+## How to list the available providers
 
 It is possible to obtain the list of available providers from the Morgen Sync service.
 Use this route to fetch metadata about the providers, such as the name, the id, the service logo, and the supported features.
