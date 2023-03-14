@@ -18,7 +18,7 @@ Deleted or cancelled events are not included in the response.
 curl --request GET \
      --url https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -122,7 +122,7 @@ The event is created in the calendar of the account identified by the `accountId
 curl --request POST \
      --url https://sync.morgen.so/v1/events/create \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
      --data '{"calendarId": <CALENDAR_ID>, ...eventfields}'
 ```
 
@@ -136,7 +136,7 @@ The following endpoint can be used to update an event in a given calendar.
 curl --request POST \
      --url https://sync.morgen.so/v1/events/update?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
      --data '{"id": <EVENT_ID>, ...eventfields}'
 ```
 
@@ -159,7 +159,7 @@ The following endpoint can be used to update an event in a given calendar.
 curl --request POST \
      --url https://sync.morgen.so/v1/events/delete?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
      --data '{"id": <EVENT_ID>}'
 ```
 
@@ -182,7 +182,7 @@ This is done by sending a POST request to the following endpoints:
 curl --request POST \
      --url https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
       --data '{"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>}'
 ```
 

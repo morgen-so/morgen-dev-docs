@@ -46,7 +46,7 @@ To obtain the Authorization URL, issue an authorized GET request as follows:
 curl --request GET \
      --url https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -74,7 +74,7 @@ To disconnect an account, issue an authorized POST request as follows:
 curl --request POST \
      --url https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -90,7 +90,7 @@ To list the connected accounts of a user, issue an authorized GET request as fol
 curl --request GET \
      --url https://sync.morgen.so/v1/integrations/accounts/list \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer JWT_USER_TOKEN'
+     --header 'Authorization: Bearer <JWT_TOKEN>'
 ```
 
 Here is an example response:
