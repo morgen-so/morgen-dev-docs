@@ -44,7 +44,7 @@ To obtain the Authorization URL, issue an authorized GET request as follows:
 
 ```
 curl --request GET \
-     --url https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?callback_url=<CALLBACK_URL> \
+     --url https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL> \
      --header 'accept: application/json' \
      --header 'Authorization: Bearer JWT_USER_TOKEN'
 ```
@@ -52,7 +52,7 @@ curl --request GET \
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
 | `providerId` | Path | - | Yes | The id of the provider you want to connect (see table above). |
-| `callback_url` | Query | - | No | The URL to redirect the user to after the authorization process is complete. If not provided, a plain text message will be displayed to the user. In case of failure, the error message will be passed as query parameter, e.g. `<CALLBACK_URL>?error=...`  |
+| `redirect_url` | Query | - | No | The URL to redirect the user to after the authorization process is complete. If not provided, a plain text message will be displayed to the user. In case of failure, the error message will be passed as query parameter, e.g. `<REDIRECT_URL>?error=...`  |
 
 
 Morgen replies with an `authorizationUrl` as below in this example:
