@@ -29,6 +29,21 @@ and to operate on those accounts on behalf of the end user.
     your internal User ID and the Morgen User ID.
 </Callout>
 
+## Authentication options
+Nylas offers Hosted Authentication and Native Authentication. Hosted Authentication
+is a simple way to authenticate end users, with a single redirect to Nylas.
+Native Authentication is more complicated, but allows you to authenticate end users
+without redirecting them to Nylas and thus fully controlling the user experience.
+
+Morgen authentication flow (see below) is similar to Nylas Hosted Authentication.
+However, the choice of the provider to connect should be made before redirecting the user
+to Morgen. This means that you need to provide a list of providers to the end user
+before redirecting them to Morgen. 
+
+<Callout type="info" emoji="💡">
+  Morgen also supports a flow similar to Nylas Native Authentication on request.
+</Callout>
+
 ## Different authorization flow
 Nylas authorization is in two steps. 
 First, you need to redirect the end user to a page where they can select which account they want to connect.
