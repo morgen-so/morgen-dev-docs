@@ -80,6 +80,20 @@ are generated based on the provider external IDs and thus can vary significantly
 For example, IDs for events from Office 365 are longer than IDs of Google Calendar events.
 If you store IDs in your database, you should not make any assumption about the length of the IDs.
 
+## Different data model
+Nylas uses a proprietary data model for calendar and event data.
+
+Morgen data model is based on the recently published [JSCalendar](https://datatracker.ietf.org/doc/rfc8984/) standard.
+The JSCalendar standard is a JSON-based representation of the iCalendar standard and we believe it is a more 
+future-proof option. Morgen data model is a subset of the JSCalendar standard, and we plan to support
+the full JSCalendar standard in the future.
+
+<Callout type="info" emoji="💡">
+  A peculiarity of the JSCalendar standard is that it makes extensive use of dictionaries instead of arrays.
+  By providing a key to each dictionary entry, the standard allows for easy and unambiguous patching of nested 
+  objects (e.g. an event attendee). Every update operation of the Sync Service is a patch operation, meaning 
+  that only the properties that are sent in the request are updated. 
+</Callout>
 
 
 

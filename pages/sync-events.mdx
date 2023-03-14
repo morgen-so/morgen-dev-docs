@@ -147,6 +147,11 @@ curl --request POST \
 
 Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
 
+<Callout type="info" emoji="💡">
+  Updates are patch updates. Only the fields that are provided will be updated. All other fields will remain unchanged.
+  To avoid unintended changes, it is recommended to always provide only the fields that need to be updated.
+</Callout>
+
 <Callout type="warning" emoji="⚠️">
   Currently `seriesUpdateMode` only supports the default value (`single`).
 </Callout>
