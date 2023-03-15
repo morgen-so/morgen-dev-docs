@@ -95,6 +95,27 @@ the full JSCalendar standard in the future.
   that only the properties that are sent in the request are updated. 
 </Callout>
 
+## Always expanding recurring events
+Nylas `expand_recurring` parameter is used to specify whether recurring events should be expanded or not when listing events.
+
+Morgen does not have an `expand_recurring` parameter. Instead, Morgen always expands recurring events when listing events.
+It is not possible to get a list of recurring events without expanding them.
+
+## A single parameter to edit recurring events
+Editing recurring events is a complex operation. If you are building a user-facing application, you 
+probably want to provide the user the ability to apply changes to a single instance of a recurring event,
+to all instances of a recurring event, or to future instances of a recurring event.
+
+Nylas requires you to operate differenly depending on which of the options above you want to support.
+For example, if you want to support editing a single instance of a recurring event, you need to retrieve expanded
+events and update the event instance you want to edit. If you want to support editing all instances of a recurring event,
+you need to retrieve the  _master_ event, and update that. If you want to support editing future instances of a recurring event,
+you need to do it in two steps by first updating the master event to put an end date on the recurrence, and then
+creating a new recurring event with the updated fields.
+
+Morgen provides a single method to edit all events, while still supporting the three options above by setting the
+`seriesUpdateMode` parameter. See the [Edit an event](/sync-events#update-an-event) section for more details.
+
 
 
 

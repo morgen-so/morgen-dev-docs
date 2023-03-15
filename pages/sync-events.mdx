@@ -156,6 +156,36 @@ Other fields of an event are described in the [JSCalendar standard](https://data
   Currently `seriesUpdateMode` only supports the default value (`single`).
 </Callout>
 
+## Request the creation of a virtual meeting room
+
+Both the `create` and `update` endpoints support the creation of a virtual meeting room for the event.
+To request the creation of a virtual meeting room, set the `morgen.so:requestVirtualRoom` field to `default`
+in the body of the request.
+This will create a virtual meeting room with the default settings of the integration.
+Google Meet will be added if the event is saved in a Google Calendar, while Microsoft Teams will be 
+added if the event is saved in a Office 365 Calendar.
+
+```
+curl --request POST \
+     --url https://sync.morgen.so/v1/events/create \
+     --header 'accept: application/json' \
+     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --data '{"calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields}'
+```
+
+Please notice that once a room has been attached to an event it cannot be removed with an update.
+
+<Callout type="info" emoji="💡">
+  Notice that Google Meet cannot be used on an Office 365 calendar. Similarly Microsoft Teams cannot be used on a Google Calendar.
+  Usually this is not an issue, as these services are always used together with the corresponding calendar.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  Support for Zoom and Webex is planned. It will be possible to request a virtual meeting room
+  with Zoom and Webex and attach the meeting room to events created in any calendar.
+</Callout>
+
+
 ## Delete an event
 
 The following endpoint can be used to update an event in a given calendar.
