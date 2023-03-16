@@ -18,7 +18,7 @@ Deleted or cancelled events are not included in the response.
 curl --request GET \
      --url https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -122,7 +122,7 @@ The event is created in the calendar of the account identified by the `accountId
 curl --request POST \
      --url https://sync.morgen.so/v1/events/create \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
      --data '{"calendarId": <CALENDAR_ID>, ...eventfields}'
 ```
 
@@ -136,7 +136,7 @@ The following endpoint can be used to update an event in a given calendar.
 curl --request POST \
      --url https://sync.morgen.so/v1/events/update?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
      --data '{"id": <EVENT_ID>, ...eventfields}'
 ```
 
@@ -147,14 +147,30 @@ curl --request POST \
 
 Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
 
+<Callout type="warning" emoji="⚠️">
+  Currently `seriesUpdateMode` only supports the default value (`single`).
+</Callout>
+
 <Callout type="info" emoji="💡">
   Updates are patch updates. Only the fields that are provided will be updated. All other fields will remain unchanged.
   To avoid unintended changes, it is recommended to always provide only the fields that need to be updated.
 </Callout>
 
-<Callout type="warning" emoji="⚠️">
-  Currently `seriesUpdateMode` only supports the default value (`single`).
-</Callout>
+Here is an example of a request to update an event title, while leaving all other fields unchanged:
+
+
+```
+curl --request POST \
+     --url https://sync.morgen.so/v1/events/update \
+     --header 'accept: application/json' \
+     --header 'Authorization: Bearer <JWT>'
+     --data '{
+       "id": "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
+       "title": "Title updated"
+      }'
+```
+
+
 
 ## Request the creation of a virtual meeting room
 
@@ -169,7 +185,7 @@ added if the event is saved in a Office 365 Calendar.
 curl --request POST \
      --url https://sync.morgen.so/v1/events/create \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
      --data '{"calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields}'
 ```
 
@@ -194,7 +210,7 @@ The following endpoint can be used to update an event in a given calendar.
 curl --request POST \
      --url https://sync.morgen.so/v1/events/delete?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
      --data '{"id": <EVENT_ID>}'
 ```
 
@@ -217,7 +233,7 @@ This is done by sending a POST request to the following endpoints:
 curl --request POST \
      --url https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE> \
      --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT_TOKEN>'
+     --header 'Authorization: Bearer <JWT>'
       --data '{"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>}'
 ```
 
