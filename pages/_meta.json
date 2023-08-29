@@ -4,7 +4,6 @@
     "type": "separator",
     "title": "Sync Service"
   },
-  "sync-authentication": "Authentication",
   "sync-accounts": "Accounts",
   "sync-calendars": "Calendars",
   "sync-events": "Events",
@@ -17,8 +16,6 @@
     "type": "separator",
     "title": "More info"
   },
-  "comparison-with-nylas": "Comparison with Nylas",
-  "roadmap": "Roadmap",
   "contact": {
     "title": "Contact ↗",
     "type": "page",
