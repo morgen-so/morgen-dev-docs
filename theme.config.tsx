@@ -15,6 +15,11 @@ const config: DocsThemeConfig = {
   footer: {
     text: 'Morgen Docs - Morgen AG © 2020 - 2023 All rights reserved.',
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: '%s – Morgen',
+    }
+  },
   head: () => {
     const { asPath, defaultLocale, locale } = useRouter()
     const { frontMatter } = useConfig()
