@@ -28,7 +28,7 @@ fetch("https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<S
 | :-----    | :---- | :---- | :---- | :---- |
 | `calendarIds` | Query | - | Yes | Comma-separated list of calendar IDs to retrieve events from. Notice that these calendars must all belong to the same account identified by `accountId`. |
 | `start` | Query | - | Yes | Start of the time window in ISO 8601 format, e.g. `2023-03-01T00:00:00Z` |
-| `end` | Query | - | Yes | End of the time window in ISO 8601 format, e.g. `2023-04-01T00:00:00Z`. This must be greater than `start`. The interval cannot be longer than 6 months. It is recommanded to retrieve no more than 2 months of events at the same time.  |
+| `end` | Query | - | Yes | End of the time window in ISO 8601 format, e.g. `2023-04-01T00:00:00Z`. This must be greater than `start`. The interval cannot be longer than 6 months. It is recommended to retrieve no more than 2 months of events at the same time.  |
 
 Here is an example response:
 
