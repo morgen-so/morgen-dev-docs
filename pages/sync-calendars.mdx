@@ -11,11 +11,14 @@ reference the calendar in other API methods (e.g. to retrieve events).
 
 Returns a list of calendars for an authenticated account.
 
-```
-curl --request GET \
-     --url https://sync.morgen.so/v1/calendars/list?accountId=<ACCOUNT_ID> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
+```js
+fetch("https://sync.morgen.so/v1/calendars/list?accountId=<ACCOUNT_ID>", {
+    method: "GET",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    }
+});
 ```
 
 | Parameter | Type | Default | Required | Description |

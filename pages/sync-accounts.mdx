@@ -42,11 +42,15 @@ from Morgen, then you redirect the user browser to that URL.
 
 To obtain the Authorization URL, issue an authorized GET request as follows:
 
-```
-curl --request GET \
-     --url https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
+```js
+fetch("https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL>", {
+    method: "GET",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    }
+});
+
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -70,11 +74,14 @@ You can then redirect the user to the provided URL where the user will be able t
 
 To disconnect an account, issue an authorized POST request as follows:
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
+```js
+fetch("https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    }
+});
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -86,11 +93,14 @@ curl --request POST \
 
 To list the connected accounts of a user, issue an authorized GET request as follows:
 
-```
-curl --request GET \
-     --url https://sync.morgen.so/v1/integrations/accounts/list \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
+```js
+fetch("https://sync.morgen.so/v1/integrations/accounts/list", {
+    method: "GET",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    }
+});
 ```
 
 Here is an example response:
@@ -131,10 +141,14 @@ Use this route to fetch metadata about the providers, such as the name, the id, 
 To list the available providers, issue an authorized GET request as follows:
 
 
-```
-curl --request GET \
-     --url https://sync.morgen.so/v1/integrations/list \
-     --header 'accept: application/json' \
+```js
+fetch("https://sync.morgen.so/v1/integrations/list", {
+    method: "GET",
+    headers: {
+        "accept": "application/json"
+    }
+});
+
 ```
 
 Notice that this route does not require authentication.

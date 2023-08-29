@@ -14,11 +14,14 @@ Events are retrieved in a given time window, and recurring events
 are automatically expanded to their individual occurrences.
 Deleted or cancelled events are not included in the response.
 
-```
-curl --request GET \
-     --url https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
+```js
+fetch("https://sync.morgen.so/v1/events/list?calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME>", {
+    method: "GET",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    }
+});
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -118,12 +121,15 @@ Morgen returns some additional fields for convenience and to provide more inform
 Morgen offers an endpoint to create events in a given calendar.
 The event is created in the calendar of the account identified by the `accountId` parameter.
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/create \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-     --data '{"calendarId": <CALENDAR_ID>, ...eventfields}'
+```js
+fetch("https://sync.morgen.so/v1/events/create", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({"calendarId": <CALENDAR_ID>, ...eventfields})
+});
 ```
 
 The field `calendarId` is mandatory. Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
@@ -132,12 +138,15 @@ The field `calendarId` is mandatory. Other fields of an event are described in t
 
 The following endpoint can be used to update an event in a given calendar.
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/update?seriesUpdateMode=<UPDATE_MODE> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-     --data '{"id": <EVENT_ID>, ...eventfields}'
+```js
+fetch("https://sync.morgen.so/v1/events/update?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({"id": <EVENT_ID>, ...eventfields})
+});
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -159,15 +168,18 @@ Other fields of an event are described in the [JSCalendar standard](https://data
 Here is an example of a request to update an event title, while leaving all other fields unchanged:
 
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/update \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-     --data '{
+```js
+fetch("https://sync.morgen.so/v1/events/update", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({
        "id": "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
        "title": "Title updated"
-      }'
+    })
+});
 ```
 
 
@@ -181,12 +193,15 @@ This will create a virtual meeting room with the default settings of the integra
 Google Meet will be added if the event is saved in a Google Calendar, while Microsoft Teams will be 
 added if the event is saved in a Office 365 Calendar.
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/create \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-     --data '{"calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields}'
+```js
+fetch("https://sync.morgen.so/v1/events/create", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({"calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields})
+});
 ```
 
 Please notice that once a room has been attached to an event it cannot be removed with an update.
@@ -206,12 +221,15 @@ Please notice that once a room has been attached to an event it cannot be remove
 
 The following endpoint can be used to update an event in a given calendar.
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/delete?seriesUpdateMode=<UPDATE_MODE> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-     --data '{"id": <EVENT_ID>}'
+```js
+fetch("https://sync.morgen.so/v1/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({"id": <EVENT_ID>})
+});
 ```
 
 | Parameter | Type | Default | Required | Description |
@@ -229,12 +247,15 @@ curl --request POST \
 An event can be accepted, declined or tentatively accepted by the user. 
 This is done by sending a POST request to the following endpoints:
 
-```
-curl --request POST \
-     --url https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE> \
-     --header 'accept: application/json' \
-     --header 'Authorization: Bearer <JWT>'
-      --data '{"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>}'
+```js
+fetch("https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "Bearer <JWT>"
+    },
+    body: JSON.stringify({"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>})
+});
 ```
 
 The last segment of the URL marked with `<RSVP_ACTION>` defines the action to be performed. 
