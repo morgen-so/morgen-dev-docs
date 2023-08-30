@@ -315,8 +315,10 @@ The following code snippet shows how to receive a Slack message when something c
 }
 ```
 
-### Custom Workflow: Set newly event description written by ChatGPT
-The following code snippet shows how to use the `fetchMorgen` and `getOpenAIResponse` to _"Write a movie trailer script for a movie of this title"_ as description of all your events based on its title.
+### Custom Workflow: Generate event descriptions using ChatGPT
+The following code snippet shows how to use the `fetchMorgen` and `getOpenAIResponse` to put ChatGPT to work on your newly created events.
+
+It uses the prompt _"Write a movie trailer script for a movie of this title"_ to write a new event description via ChatGPT, and passes the result to the event update API.
 
 ```js
 async function fetchMorgen(url, opts) { ... } // See Utilities: Wrapper for fetching Morgen APIs
@@ -333,11 +335,14 @@ async function run(trigger) {
     return;
   }
 
+  // Get the first added event that hasn't been processed previously (ignore the rest)
   const addedEvent = trigger.eventUpdates.added[0];
-  const title = addedEvent.title;
 
+  // Generate a description using the title of the event
+  const title = addedEvent.title;
   const description = await getOpenAIResponse("Write a movie trailer script for a movie of this title: " + title);
 
+  // Update the event via the Morgen API
   const resp = await fetchMorgen("https://sync.morgen.so/v1/events/update", {
     method: 'POST',
     body: JSON.stringify({
