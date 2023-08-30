@@ -2,24 +2,16 @@
   "index": "Introduction",
   "-- Sync": {
     "type": "separator",
-    "title": "Sync Service"
+    "title": "Morgen API"
   },
   "sync-accounts": "Accounts",
   "sync-calendars": "Calendars",
   "sync-events": "Events",
   "sync-videoconferencing": "Videoconferencing",
-  "-- Morgen ": {
-    "type": "separator",
-    "title": "Morgen API"
-  },
-  "-- More ": {
-    "type": "separator",
-    "title": "More info"
-  },
   "contact": {
     "title": "Contact ↗",
     "type": "page",
-    "href": "mailto:connect@mrogen.so",
+    "href": "mailto:connect@morgen.so",
     "newWindow": true
   }
 }
