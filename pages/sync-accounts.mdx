@@ -1,3 +1,5 @@
+import { Tabs } from 'nextra/components';
+
 # Accounts
 
 As an API gateway, the Morgen Sync Service needs to be able to access the accounts of the users of the
@@ -42,16 +44,32 @@ from Morgen, then you redirect the user browser to that URL.
 
 To obtain the Authorization URL, issue an authorized GET request as follows:
 
-```js
-fetch("https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL>", {
-    method: "GET",
-    headers: {
-        "accept": "application/json",
-        "Authorization": "Bearer <JWT>"
-    }
-});
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL>", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/:providerId/oauth/authorizationUrl?redirect_url=<REDIRECT_URL>", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>"
+            }
+        });
+            ```
+    </Tabs.Tab>
+</Tabs>
 
-```
+
 
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
@@ -74,15 +92,32 @@ You can then redirect the user to the provided URL where the user will be able t
 
 To disconnect an account, issue an authorized POST request as follows:
 
-```js
-fetch("https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect", {
-    method: "POST",
-    headers: {
-        "accept": "application/json",
-        "Authorization": "Bearer <JWT>"
-    }
-});
-```
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect", {
+            method: "POST",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect", {
+            method: "POST",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+</Tabs>
+
+
 
 | Parameter | Type | Default | Required | Description |
 | :-----    | :---- | :---- | :---- | :---- |
@@ -93,15 +128,32 @@ fetch("https://sync.morgen.so/v1/integrations/accounts/:accountId/disconnect", {
 
 To list the connected accounts of a user, issue an authorized GET request as follows:
 
-```js
-fetch("https://sync.morgen.so/v1/integrations/accounts/list", {
-    method: "GET",
-    headers: {
-        "accept": "application/json",
-        "Authorization": "Bearer <JWT>"
-    }
-});
-```
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/accounts/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://sync.morgen.so/v1/integrations/accounts/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+</Tabs>
+
+
 
 Here is an example response:
 
