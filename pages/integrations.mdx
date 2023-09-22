@@ -1,0 +1,183 @@
+import { Tabs } from "nextra/components";
+import { Callout } from "nextra-theme-docs";
+
+# Integrations
+
+The `integrations` API allows you to connect Morgen to third-party services (e.g. Google Calendar or Todoist)
+and manage accounts that are already connected.
+
+## Supported services
+
+The Morgen Sync service currently supports the following services:
+
+### Calendars
+
+| Provider Name          | Integration Id | Contact directory |
+| :--------------------- | :------------- | :---------------- |
+| Google Calendar        | `google`       | ✅                |
+| Office 365 (Graph API) | `o365`         | ✅                |
+| Exchange on Premise    | `ews`          | ✅                |
+| iCloud                 | `dav/icloud`   |                   |
+| Fastmail               | `dav/fastmail` |                   |
+| Other (CalDAV)         | `dav`          |                   |
+
+## Videoconferencing
+
+| Provider Name   | Integration Id |
+| :-------------- | :------------- |
+| Google Meet     | `googleMeet`   |
+| Microsoft Teams | `teams`        |
+| Zoom            | `zoom`         |
+| Webex           | `webex`        |
+
+## Tasks
+
+| Provider Name  | Integration Id     |
+| :------------- | :----------------- |
+| Todoist        | `todoist`          |
+| Google Tasks   | `googleTasks`      |
+| Microsoft ToDo | `microsoftToDo`    |
+| Outlook email  | `microsoftOutlook` |
+
+Morgen itself is a task manager. Morgen-hosted tasks use the `morgen`
+integration id.
+
+## How to connect an account
+
+<Callout type="info" emoji="👉">
+  Please connect your third-party tools using the Morgen desktop app, or from
+  https://platform.morgen.so.
+</Callout>
+
+## How to disconnect an account
+
+<Callout type="info" emoji="👉">
+  You can disconnect an account from the Morgen desktop app, or from
+  https://platform.morgen.so.
+</Callout>
+
+## How to list the connected accounts of a user
+
+To list the connected accounts of a user, issue an authorized GET request as follows:
+
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/integrations/accounts/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/integrations/accounts/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+</Tabs>
+
+Here is an example response:
+
+```json
+{
+  "data": {
+    "accounts": [
+      {
+        "id": "640a62c9aa5b7e06cf400000",
+        "providerId": "87ee97f6-470f-426a-9b73-xxxxxxxxxx",
+        "userId": "6010a263f9a7f30012200000",
+        "clientId": "morgen",
+        "providerUserId": "example@morgen.so",
+        "providerUserDisplayName": "John Doe",
+        "integrationId": "o365",
+        "auth": {
+          "mechanism": "oauth",
+          "refreshTokenUpdatedAt": "2023-03-09T22:50:49.838Z",
+          "accessTokenUpdatedAt": "2023-03-13T12:50:00.957Z"
+        },
+        "lastCheckedAt": "2023-03-13T12:50:01.371Z",
+        "lastCheckedError": null,
+        "requiresAuthentication": null,
+        "createdAt": "2023-03-09T22:50:49.842Z",
+        "updatedAt": "2023-03-13T12:50:01.372Z",
+        "shouldReconnect": false,
+        "shouldReconnectReason": null,
+        // The following fields are used internally by Morgen,
+        // as we are refactoring part of our integrations to a new sync service.
+        // You can ignore them.
+        "isConnectedSync": true,
+        "isConnectedLegacy": false,
+        "canMigrateToSync": false,
+        "supersededByAccountId": null
+      }
+    ]
+  }
+}
+```
+
+## How to list the available providers
+
+It is possible to obtain the list of available providers from the Morgen Sync service.
+Use this route to fetch metadata about the providers, such as the name, the id, the service logo, and the supported features.
+
+To list the available providers, issue an authorized GET request as follows:
+
+```js
+fetch("https://api.morgen.so/v3/integrations/list", {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+  },
+});
+```
+
+Notice that this route does not require authentication.
+
+Here is an example response:
+
+```json
+{
+  "data": {
+    "integrations": [
+      {
+        "id": "o365",
+        "authId": "o365",
+        "groups": [
+          "calendars"
+        ],
+        "displayName": "Office 365",
+        "supportedAuthMethods": ["oauth"],
+        "iconData": "PHN2ZyBmaWxsPSJub25lIiB..."
+      }
+      ...
+    ],
+    "groups": [
+      {
+        "displayName": "Video Conferencing",
+        "type": "video"
+      },
+      {
+        "displayName": "Tasks",
+        "type": "tasks"
+      },
+      {
+        "displayName": "Calendars",
+        "type": "calendars"
+      },
+      {
+        "displayName": "Automation",
+        "type": "automation"
+      }
+    ]
+  }
+}
+```

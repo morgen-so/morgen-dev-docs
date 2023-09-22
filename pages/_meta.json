@@ -7,8 +7,8 @@
   },
   "sync-introduction": "Introduction",
   "sync-authentication": "Authentication",
-  "sync-accounts": "Accounts",
-  "sync-calendars": "Calendars",
+  "integrations": "Integrations",
+  "calendars": "Calendars",
   "sync-events": "Events",
   "sync-videoconferencing": "Videoconferencing",
   "contact": {
