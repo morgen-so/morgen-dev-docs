@@ -6,11 +6,10 @@
     "title": "Morgen API"
   },
   "sync-introduction": "Introduction",
-  "sync-authentication": "Authentication",
+  "authentication": "Authentication",
   "integrations": "Integrations",
   "calendars": "Calendars",
-  "sync-events": "Events",
-  "sync-videoconferencing": "Videoconferencing",
+  "events": "Events",
   "contact": {
     "title": "Contact ↗",
     "type": "page",
