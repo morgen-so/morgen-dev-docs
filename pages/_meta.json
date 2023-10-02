@@ -20,6 +20,7 @@
     "type": "separator",
     "title": "Custom Workflows"
   },
-  "cw-authentication": "Authentication",
-  "cw-guide": "Guide"
+  "cw-introduction": "Introduction",
+  "cw-sdk": "SDK",
+  "cw-authentication": "Authentication"
 }

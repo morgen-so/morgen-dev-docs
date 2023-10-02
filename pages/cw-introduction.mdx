@@ -5,23 +5,28 @@ What would you do if you could write your own workflow?
 
 ## Introduction
 
-Custom Workflows is a robust feature designed to supercharge the customization and automation of your calendaring experience.
-Like other TimeTo Workflows, they operate on your connected calendars.
-Enabling visibility on your events, meetings, and scheduled tasks.
+Custom Workflows supercharge the customization and automation of your calendaring experience.
 
-But here's the twist: Custom Workflows hand over the reins to you.
+Like other TimeTo Workflows, they enable control over your events, meetings, and scheduled tasks.
 
-They are blank canvases, you can write your own code, automate your O365/Google/Slack via our dedicated APIs, and integrate it with third-party apps.
+The twist? You write it, and we run it for you!
 
-Even though you design them, we ensure they run seamlessly, just like any other workflow on our platform.
-Once created it will run reacting to calendar updates, or you can launch your workflow manually from the platform or externally.
+Custom Workflows are blank canvases: you can write your own code, automate your O365/Google/Slack via our dedicated APIs, and integrate it with third-party apps.
+
+Once your workflow is ready to be deployed, our system will trigger it just like any other workflow on our platform.
+Triggers include calendar updates and periodical, or you can launch your workflow manually from the platform or externally via HTTP.
 
 Here are some examples of what you can implement:
-- 🤖 Fancy auto-scheduling tasks for tomorrow using your third-party task manager? You can schedule tasks aligned with your upcoming availability.
-- 💬 Dream of a Slack notification for every invite from VIP email addresses? We've got you.
-- 🚫 Don't want meetings at certain times or days? Auto-decline them.
-- 💌 How about a Friday roundup? Make your team aware of meeting hours from the past week slacking them directly any relevant stats.
-- 🚀 Release something? Trigger directly from the deployment script the workflow to set an auto-reminder for your analyst 3 days later, ensuring they peek at the metrics.
+
+- 🤖 Fancy __auto-scheduling tomorrow's tasks__ from your third-party task manager? Schedule tasks aligned with your __true availability__.
+
+- 💬 Dream of a __Slack notification__ for every invite from VIP email addresses? __We've got you__.
+
+- 🚫 __Don't want meetings__ at certain times or days? __Auto-decline__ them.
+
+- 💌 How about a __Friday roundup__? Make your team aware of time spent in long meetings in the past week, __slacking them directly__ any useful stats.
+
+- 🚀 Release something? Trigger a workflow __directly from the deployment script__ to set a reminder for your analyst 3 days later, ensuring they peek at the metrics.
 
 ## Create your first Custom Workflow
 
@@ -35,13 +40,13 @@ Here are some examples of what you can implement:
     Before proceeding to create Custom Workflows, ensure that you've connected the calendar accounts you wish to control. This ensures your workflow has the visibility and permissions it needs.
 
 
-    ### Navigate to Workflows Gallery:
+    ### Navigate to the Workflows Gallery:
     In the workflows gallery, you'll find the Custom Workflow together with the other workflows. Click on create or go directly to the [Custom Workflow](https://platform.morgen.so/workflows/custom-workflow/new) create page.
 
     ### Create a new Custom Workflow:
     Here you can create a new Custom Workflow, you can:
     - Choose a name for your workflow.
-    - Choose the calendar you want to trigger the workflow. When any event is added/updated/removed, the workflow will run.
+    - Choose the calendar you want to trigger the workflow. When any event is added, updated or removed, the workflow will run.
     - Select the calendars you want control over within your script.
     - Provide your own script to run when the workflow is triggered.
 </Steps>
@@ -51,8 +56,10 @@ Here are some examples of what you can implement:
 Now that you've got the basics down, check out the more advanced examples below
 or check out the documentation on the [Morgen API](/introduction).
 
-## Data types
-Here are some data types you will use to:
+Alternatively, you might want to step out of the web app and back into the comfort of your own dev environment with the [Morgen Custom Workflow SDK](https://github.com/morgen-so/morgen-cw-sdk)
+
+## Data Types
+Here are some data type references you might find useful in the development of your first workflows:
 
 ### Trigger Data
 The `trigger` argument is always passed to your script when the workflow is triggered.
@@ -61,7 +68,7 @@ async function run(trigger) {
   const {
     // Changes to the specified calendar since the previous trigger
     // Each field is an array of Event[]
-    eventUpdates: { added, removed, updated },
+    eventUpdates: { added, removed, modified },
     accounts: {
       // An array of calendars provided by workflow configuration
       // E.g. [{accountId: "...", calendarId: "..."}]
@@ -73,10 +80,8 @@ async function run(trigger) {
       email,
       // Your first name
       firstName
-    },
-    tokens
+    }
   } = trigger;
-
   ...
 }
 ```
@@ -214,7 +219,9 @@ Here are some utility functions you can use in your custom workflow scripts:
 ### Wrapper for fetching Morgen APIs
 This wrapper will make it easier to make requests to Morgen APIs using the [`fetch` interface](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 It uses the global `TOKEN` variable, which stores your own personal access token to make calls to our API.
-You can use this to make requests to either `https://sync.morgen.so` for fetching/updating calendar events or interacting with your other accounts, or `https://api.morgen.so` for anything specific to Morgen itself, like tasks.
+You can use this to make requests to `https://api.morgen.so` for:
+ - fetching/updating calendar events and tasks
+ - interacting with your other accounts
 
 ```js
 async function fetchMorgen(url, opts) {
@@ -275,11 +282,12 @@ The following code snippet shows how to use the `fetchMorgen` utility to create 
 async function fetchMorgen(url, opts) { ... } // See Utilities: Wrapper for fetching Morgen APIs
 
 async function run(trigger) {
-  const calId = trigger.accounts.calendar[0].calendarId;
-  const resp = await fetchMorgen("https://sync.morgen.so/v1/events/create", {
+  const { accountId, calendarId } = trigger.accounts.calendar[0];
+  const resp = await fetchMorgen("https://api.morgen.so/v3/events/create", {
     method: 'POST',
     body: JSON.stringify({
-      calendarId: calId,
+      accountId,
+      calendarId,
       title: 'My New Event',
       description: '#automated',
       start: "2023-08-25T13:00:00",
@@ -325,7 +333,7 @@ async function fetchMorgen(url, opts) { ... } // See Utilities: Wrapper for fetc
 async function getOpenAIResponse(prompt) { ... } // See Utilities: Get a ChatGPT prompt response
 
 async function run(trigger) {
-  const calId = trigger.accounts.calendar[0].calendarId;
+  const { accountId, calendarId } = trigger.accounts.calendar[0];
 
   log(trigger);
 
@@ -343,11 +351,12 @@ async function run(trigger) {
   const description = await getOpenAIResponse("Write a movie trailer script for a movie of this title: " + title);
 
   // Update the event via the Morgen API
-  const resp = await fetchMorgen("https://sync.morgen.so/v1/events/update", {
+  const resp = await fetchMorgen("https://api.morgen.so/v3/events/update", {
     method: 'POST',
     body: JSON.stringify({
       id: addedEvent.id,
-      calendarId: calId,
+      accountId,
+      calendarId,
       title,
       description,
     })
