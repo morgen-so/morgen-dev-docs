@@ -5,7 +5,7 @@
     "type": "separator",
     "title": "Morgen API"
   },
-  "sync-introduction": "Introduction",
+  "introduction": "Introduction",
   "authentication": "Authentication",
   "integrations": "Integrations",
   "calendars": "Calendars",
