@@ -6,7 +6,7 @@ import { useConfig } from "nextra-theme-docs";
 const config: DocsThemeConfig = {
   logo: <span>Morgen Developer Documentation</span>,
   project: {
-    link: 'https://morgen.so',
+    link: "https://github.com/morgen-so/morgen-cw-sdk",
   },
   // chat: {
   //   link: 'https://discord.gg/KNaeNhZ9yf',
