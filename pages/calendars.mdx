@@ -1,0 +1,138 @@
+import { Tabs } from "nextra/components";
+
+# Calendars
+
+Each calendar account connected to Morgen can have multiple calendars.
+Each calendar contains a list of events. Calendars contain fields
+that describe the calendar itself, such as its name, color, and time zone.
+The `id` field is the unique identifier of the calendar and is used,
+together with an `accountId` to reference the calendar in other API methods
+(e.g. to retrieve events).
+
+## List calendars
+
+Returns a list of calendars over all connected calendar accounts.
+
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/calendars/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/calendars/list", {
+            method: "GET",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>"
+            }
+    });
+        ```
+    </Tabs.Tab>
+</Tabs>
+
+Morgen data model for calendars is modeled after the [JMAP specification](https://jmap.io/spec-calendars.html), with some differences.
+
+Notice that the call will return all your calendars, aggregated over the connected calendar accounts.
+Here is an example response:
+
+```json
+{
+  "data": {
+    "calendars": [
+      {
+        "@type": "Calendar",
+        "id": "WyI2NDBhNjJjOWFhNWI3ZTA2Y2Y0MjQw...",
+        "accountId": "640a62c9aa5b7e06cf4240f8",
+        "integrationId": "o365",
+        "name": "Calendar", // the original name from the provider (if available)
+        "color": "#88baf8", // the original color from the provider (if available)
+        "sortOrder": 0, // the calendar order within the account
+        "myRights": {
+          "mayReadFreeBusy": true,
+          "mayReadItems": true,
+          "mayWriteAll": true,
+          "mayWriteOwn": true,
+          "mayUpdatePrivate": true,
+          "mayRSVP": true,
+          "mayAdmin": true,
+          "mayDelete": true
+        },
+        "defaultAlertsWithTime":{
+          "MzBfZGlzcGxheV90aW1lX2FuY29uYS5tcmNAZ21haWwuY29t":{
+            "@type":"Alert",
+            "trigger": {
+              "@type": "OffsetTrigger",
+              "offset":"-PT30M"
+            },
+            "action":"display"
+          }
+        },
+        "defaultAlertsWithoutTime":{
+          "MzBfZGlzcGxheV90aW1lX2FuY29uYS5tcmNAZ21haWwuY29t":{
+            "@type":"Alert",
+            "trigger": {
+              "@type": "OffsetTrigger",
+              "offset":"-P1D"
+            },
+            "action":"display"
+          }
+        },
+        // Morgen-specific fields
+        "morgen.so:metadata": {
+          "busy": true, // whether the calendar is considered for availability
+          "overrideColor": "#ff0000", // color set from Morgen desktop
+          "overrideName": "Morgen Calendar" // name set from Morgen desktop
+        }
+      },
+     ...
+    ]
+  }
+}
+
+```
+
+## Update calendar metadata
+
+At the moment, only the Morgen-specific metadata of a calendar can be updated.
+There is no API available to update the calendar information directly on the remote calendar provider.
+
+<Tabs items={['API Key', 'JWT Token']}>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/calendars/update", {
+            method: "POST",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "ApiKey <API_KEY>",
+            body: JSON.stringify(<CALENDAR_UPDATE>)
+            }
+    });
+        ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+        ```js
+        fetch("https://api.morgen.so/v3/calendars/update", {
+            method: "POST",
+            headers: {
+            "accept": "application/json",
+            "Authorization": "Bearer <JWT>",
+            body: JSON.stringify(<CALENDAR_UPDATE>)
+            }
+    });
+        ```
+    </Tabs.Tab>
+</Tabs>
+
+| Parameter            | Type | Default | Required | Description                                                                                                                  |
+| :------------------- | :--- | :------ | :------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `id`                 | Body | -       | Yes      | The ID of the calendar to update.                                                                                            |
+| `accountId`          | Body | -       | Yes      | The ID of the account the calendar belongs to.                                                                               |
+| `morgen.so:metadata` | Body | -       | Yes      | An object with the metadata to update. The object can only contain the fields `busy`, `overrideColor` and/or `overrideName`. |

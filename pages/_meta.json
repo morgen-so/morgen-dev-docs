@@ -1,17 +1,26 @@
 {
   "index": "Introduction",
+
   "-- Sync": {
     "type": "separator",
     "title": "Morgen API"
   },
-  "sync-accounts": "Accounts",
-  "sync-calendars": "Calendars",
-  "sync-events": "Events",
-  "sync-videoconferencing": "Videoconferencing",
+  "introduction": "Introduction",
+  "authentication": "Authentication",
+  "integrations": "Integrations",
+  "calendars": "Calendars",
+  "events": "Events",
   "contact": {
     "title": "Contact ↗",
     "type": "page",
     "href": "mailto:connect@morgen.so",
     "newWindow": true
-  }
+  },
+  "-- CustomWorkflows": {
+    "type": "separator",
+    "title": "Custom Workflows"
+  },
+  "cw-introduction": "Introduction",
+  "cw-sdk": "SDK",
+  "cw-authentication": "Authentication"
 }
