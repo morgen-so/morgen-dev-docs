@@ -1,28 +1,26 @@
 {
   "index": "Introduction",
+
   "-- Sync": {
-    "type": "separator",
-    "title": "Sync Service"
-  },
-  "sync-authentication": "Authentication",
-  "sync-accounts": "Accounts",
-  "sync-calendars": "Calendars",
-  "sync-events": "Events",
-  "sync-videoconferencing": "Videoconferencing",
-  "-- Morgen ": {
     "type": "separator",
     "title": "Morgen API"
   },
-  "-- More ": {
-    "type": "separator",
-    "title": "More info"
-  },
-  "comparison-with-nylas": "Comparison with Nylas",
-  "roadmap": "Roadmap",
+  "introduction": "Introduction",
+  "authentication": "Authentication",
+  "integrations": "Integrations",
+  "calendars": "Calendars",
+  "events": "Events",
   "contact": {
     "title": "Contact ↗",
     "type": "page",
-    "href": "mailto:connect@mrogen.so",
+    "href": "mailto:connect@morgen.so",
     "newWindow": true
-  }
+  },
+  "-- CustomWorkflows": {
+    "type": "separator",
+    "title": "Custom Workflows"
+  },
+  "cw-introduction": "Introduction",
+  "cw-sdk": "SDK",
+  "cw-authentication": "Authentication"
 }
