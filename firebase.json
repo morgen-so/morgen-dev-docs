@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "morgen-cw-docs",
+    "site": "morgen-docs",
     "public": "out",
     "cleanUrls": true,
     "ignore": [
