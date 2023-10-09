@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next build && next export",
-    "deploy": "npm run export && firebase deploy --only hosting:morgen-cw-docs"
+    "deploy": "npm run export && firebase deploy --only hosting:morgen-docs"
   },
   "author": "Morgen AG",
   "license": "UNLICENSED",
