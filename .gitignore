@@ -4,3 +4,7 @@ node_modules
 .idea/
 
 out/
+
+.DS_Store
+
+.firebase/hosting.b3V0.cache
