@@ -20,14 +20,14 @@ const config: DocsThemeConfig = {
       titleTemplate: "%s – Morgen Developer Documentation",
     };
   },
-  banner: {
-    key: "custom-workflow",
-    text: (
-      <a href="https://platform.morgen.so" target="_blank">
-        🎉 Now you can develop your own workflows. Try it out →
-      </a>
-    ),
-  },
+  // banner: {
+  //   key: "custom-workflow",
+  //   text: (
+  //     <a href="https://platform.morgen.so" target="_blank">
+  //       🎉 Now you can develop your own workflows. Try it out →
+  //     </a>
+  //   ),
+  // },
   head: () => {
     const { asPath, defaultLocale, locale } = useRouter();
     const { frontMatter } = useConfig();

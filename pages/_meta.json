@@ -15,12 +15,5 @@
     "type": "page",
     "href": "mailto:connect@morgen.so",
     "newWindow": true
-  },
-  "-- CustomWorkflows": {
-    "type": "separator",
-    "title": "Custom Workflows"
-  },
-  "cw-introduction": "Introduction",
-  "cw-sdk": "SDK",
-  "cw-authentication": "Authentication"
+  }
 }
