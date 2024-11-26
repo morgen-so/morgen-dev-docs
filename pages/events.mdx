@@ -46,7 +46,9 @@ Deleted or cancelled events are not included in the response.
 | `start`       | Query | -       | Yes      | Start of the time window in ISO 8601 format, e.g. `2023-03-01T00:00:00Z`                                                                                                                                                                |
 | `end`         | Query | -       | Yes      | End of the time window in ISO 8601 format, e.g. `2023-04-01T00:00:00Z`. This must be greater than `start`. The interval cannot be longer than 6 months. It is recommended to retrieve no more than 2 months of events at the same time. |
 
-Here is an example response:
+## Event schema
+
+Here is an example response for the `/events/list` endpoint described above:
 
 ```json
 {
@@ -54,35 +56,80 @@ Here is an example response:
     "events": [
       {
         "@type": "Event",
+
+        // Morgen ID for event
         "id": "WyJBUU1rQURaa1lXWXpOel...",
+
+        // 3rd-party iCalendar UID
+        "uid": "kki3mce...@google.com",
+
+        // Morgen ID for the calendar
         "calendarId": "WyI2NDBhNjJjOW...",
+
+        // Morgen ID for the account
         "accountId": "640a62c9aa5b7e06cf420000",
+
         "integrationId": "o365",
+
+        // 3rd-party ID for the base event in the recurrence
         "baseEventId": "AAkALgAAAAAAHYQDEapmEc2by...",
+
         "created": "2023-02-28T11:50:57",
         "updated": "2023-02-28T17:56:44",
+
+        // ID + timezone that identify this event within the recurrence
+        "recurrenceId": "2023-08-29T16:00:00",
+        "recurrenceIdTimeZone": "Europe/Zurich",
+
         "title": "Chat about Morgen",
         "description": "<html><body>Description of event, possibly in HTML format.</body></html>",
+        // Either "text/plain" or "text/html" depending on content
         "descriptionContentType": "text/html",
+
+        // Start time of the event. Notice that this does not include a time zone offset.
+        // Instead, the time zone is specified in the "timeZone" field.
         "start": "2023-03-01T10:15:00",
-        "duration": "PT25M",
-        "showWithoutTime": false,
         "timeZone": "Europe/Berlin",
+
+        // Duration in ISO format: 'PT[hours]H' | 'PT[minutes]M'
+        "duration": "PT25M",
+
+        // If true, this event is an all-day event. Otherwise it occurs at a specific time in the day.
+        "showWithoutTime": false,
+
+        // Whether the event details can be displayed to others users with access to the calendar.
         "privacy": "public",
+
+        // Whether the event is marked "busy" for the participants. Otherwise "free".
         "freeBusyStatus": "free",
+
         "locations": {
           "1": {
             "@type": "Location",
             "name": "Morgen HQ, Forrlibuckstrasse 223"
           }
         },
+
         "participants": {
+          // Map of pariticpant IDs to participants.
+          // The key is the base64 encoded participant email address.
           "ZGF2aWRAbW9yZ2Vu0000": {
             "@type": "Participant",
             "name": "John Doe",
+
+            // Email address of the participant
+            // NOTE: Sometimes, the participant email is a group email,
+            //       e.g. if the event was created in a secondary Google
+            //       calendar.
             "email": "doe@morgen.so",
+
             "roles": {
+              // Whether this participant will be attending
               "attendee": true,
+
+              // Whether the participant owns the event and can
+              // therefore make changes that affect other
+              // participants
               "owner": true
             },
             "participationStatus": "needs-action"
@@ -94,29 +141,42 @@ Here is an example response:
             "roles": {
               "attendee": true
             },
+
+            // Indicates whether this participant is also the owner of
+            // the calendar account
             "accountOwner": true,
             "participationStatus": "needs-action"
           },
           ...
         },
+
+
         "alerts": {
+          // Map of alert IDs to alerts. Key can be any string, as long as it is unique.
           "1": {
             "@type": "Alert",
             "trigger": {
               "@type": "OffsetTrigger",
+              // Offset in ISO format: 'PT[hours]H' | 'PT[minutes]M'
+              // In this case, 15 minutes before the event start time.
               "offset": "-PT15M",
-              "relativeTo": "start"
+              "relativeTo": "start" // only "start" is supported at the current time
             },
             "action": "display"
           },
           ...
         },
       },
+
+      // Derived, read-only fields.
+      // For example a virtual room URL if found in the event description.
       "morgen.so:derived": {
         "virtualRoom": {
           "url": "https://us02web.zoom.us/j/82...?pwd=..."
         }
       },
+
+      // Metadata, read-only, Morgen-specific fields.
       "morgen.so:metadata": {
         "updated": "2023-09-25T08:53:36.793Z"
         // Category-related fields
@@ -127,7 +187,6 @@ Here is an example response:
         "progress": "needs-action", // Possible values: "needs-action", "completed".
         "taskId": "0d464578-08ff-4df6-88b2-19083b296df7",
       }
-      ...
     ]
   }
 }
