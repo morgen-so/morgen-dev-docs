@@ -245,15 +245,19 @@ Morgen returns some additional fields for convenience and to provide more inform
 
 For Google Calendar events, you can set the event color using the `google.com:colorId` field:
 
-| Field | Type | Access | Description |
-| :---- | :--- | :----- | :---------- |
+| Field                | Type   | Access     | Description                                                                                                                         |
+| :------------------- | :----- | :--------- | :---------------------------------------------------------------------------------------------------------------------------------- |
 | `google.com:colorId` | String | Read/Write | Google's event color ID. Valid values are "1" through "11", each representing a different color in Google Calendar's color palette. |
 
 <Callout type="info" emoji="💡">
-  The `google.com:colorId` field is only available for Google Calendar events. Valid values are "1" through "11". See the [Google Calendar Colors API documentation](https://developers.google.com/workspace/calendar/api/v3/reference/colors/get) for details on what each color ID represents.
+  The `google.com:colorId` field is only available for Google Calendar events.
+  Valid values are "1" through "11". See the [Google Calendar Colors API
+  documentation](https://developers.google.com/workspace/calendar/api/v3/reference/colors/get)
+  for details on what each color ID represents.
 </Callout>
 
 **Example**: Setting a Google Calendar event color when creating an event
+
 ```json
 {
   "accountId": "640a62c9aa5b7e06cf420000",
@@ -268,7 +272,9 @@ For Google Calendar events, you can set the event color using the `google.com:co
 ```
 
 <Callout type="warning" emoji="⚠️">
-  This field only works for Google Calendar accounts. Attempting to set `google.com:colorId` on non-Google calendars (Office 365, iCloud, CalDAV, etc.) will have no effect.
+  This field only works for Google Calendar accounts. Attempting to set
+  `google.com:colorId` on non-Google calendars (Office 365, iCloud, CalDAV,
+  etc.) will have no effect.
 </Callout>
 
 ## Create an event
@@ -305,24 +311,24 @@ The event is created in the calendar of the account identified by the `accountId
 
 ### Request Body Fields
 
-| Field | Type | Required | Description |
-| :---- | :--- | :------- | :---------- |
-| `accountId` | String | Yes | The ID of the account to create the event in. |
-| `calendarId` | String | Yes | The ID of the calendar to create the event in. |
-| `title` | String | Yes | The title/summary of the event. |
-| `start` | String | Yes | Start time in LocalDateTime format (e.g., `2023-03-01T10:15:00`). |
-| `duration` | String | Yes | Duration in ISO 8601 format (e.g., `PT1H` for 1 hour, `PT30M` for 30 minutes). |
-| `timeZone` | String or null | Yes | IANA timezone (e.g., `Europe/Paris`). Use `null` for floating events (no timezone). |
-| `showWithoutTime` | Boolean | Yes | `true` for all-day events, `false` for timed events. |
-| `description` | String | No | Event description. Can be plain text or HTML (specify with `descriptionContentType`). |
-| `descriptionContentType` | String | No | Either `text/plain` or `text/html`. Default: `text/plain`. |
-| `locations` | Object | No | Map of location IDs to location objects. See [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/). |
-| `participants` | Object | No | Map of participant IDs to participant objects. The key should be the base64-encoded email address. |
-| `alerts` | Object | No | Map of alert IDs to alert objects. See Alert structure above. Cannot be used with `useDefaultAlerts: true`. |
-| `useDefaultAlerts` | Boolean | No | If `true`, use the calendar's default alert settings. Cannot be used together with `alerts`. |
-| `privacy` | String | No | `public`, `private`, or `secret`. Default: `public`. |
-| `freeBusyStatus` | String | No | `free` or `busy`. Default: `busy`. |
-| `recurrenceRules` | Array | No | Array of recurrence rule objects for recurring events. |
+| Field                    | Type           | Required | Description                                                                                                    |
+| :----------------------- | :------------- | :------- | :------------------------------------------------------------------------------------------------------------- |
+| `accountId`              | String         | Yes      | The ID of the account to create the event in.                                                                  |
+| `calendarId`             | String         | Yes      | The ID of the calendar to create the event in.                                                                 |
+| `title`                  | String         | Yes      | The title/summary of the event.                                                                                |
+| `start`                  | String         | Yes      | Start time in LocalDateTime format (e.g., `2023-03-01T10:15:00`).                                              |
+| `duration`               | String         | Yes      | Duration in ISO 8601 format (e.g., `PT1H` for 1 hour, `PT30M` for 30 minutes).                                 |
+| `timeZone`               | String or null | Yes      | IANA timezone (e.g., `Europe/Paris`). Use `null` for floating events (no timezone).                            |
+| `showWithoutTime`        | Boolean        | Yes      | `true` for all-day events, `false` for timed events.                                                           |
+| `description`            | String         | No       | Event description. Can be plain text or HTML (specify with `descriptionContentType`).                          |
+| `descriptionContentType` | String         | No       | Either `text/plain` or `text/html`. Default: `text/plain`.                                                     |
+| `locations`              | Object         | No       | Map of location IDs to location objects. See [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/). |
+| `participants`           | Object         | No       | Map of participant IDs to participant objects. The key should be the base64-encoded email address.             |
+| `alerts`                 | Object         | No       | Map of alert IDs to alert objects. See Alert structure above. Cannot be used with `useDefaultAlerts: true`.    |
+| `useDefaultAlerts`       | Boolean        | No       | If `true`, use the calendar's default alert settings. Cannot be used together with `alerts`.                   |
+| `privacy`                | String         | No       | `public`, `private`, or `secret`. Default: `public`.                                                           |
+| `freeBusyStatus`         | String         | No       | `free` or `busy`. Default: `busy`.                                                                             |
+| `recurrenceRules`        | Array          | No       | Array of recurrence rule objects for recurring events.                                                         |
 
 Other fields from the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/) are also supported.
 
@@ -363,19 +369,22 @@ The following endpoint can be used to update an event in a given calendar.
 
 ### Request Body Fields
 
-| Field | Type | Required | Description |
-| :---- | :--- | :------- | :---------- |
-| `id` | String | Yes* | The Morgen ID of the event to update. *Can be omitted if `masterEventId` and `recurrenceId` are provided (see below). |
-| `accountId` | String | Yes | The ID of the account the event belongs to. |
-| `calendarId` | String | Yes | The ID of the calendar the event belongs to. |
-| `masterEventId` | String | No | For recurring event instances: The Morgen ID of the master recurring event. Must be provided with `recurrenceId` if `id` is not provided. |
-| `recurrenceId` | String | No | For recurring event instances: The LocalDateTime identifying this instance (e.g., `2023-08-29T16:00:00`). Must be provided with `masterEventId` if `id` is not provided. |
-| `recurrenceIdTimeZone` | String | No | Optional timezone for the `recurrenceId` (not required for all-day events). |
+| Field                  | Type   | Required | Description                                                                                                                                                              |
+| :--------------------- | :----- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | String | Yes\*    | The Morgen ID of the event to update. \*Can be omitted if `masterEventId` and `recurrenceId` are provided (see below).                                                   |
+| `accountId`            | String | Yes      | The ID of the account the event belongs to.                                                                                                                              |
+| `calendarId`           | String | Yes      | The ID of the calendar the event belongs to.                                                                                                                             |
+| `masterEventId`        | String | No       | For recurring event instances: The Morgen ID of the master recurring event. Must be provided with `recurrenceId` if `id` is not provided.                                |
+| `recurrenceId`         | String | No       | For recurring event instances: The LocalDateTime identifying this instance (e.g., `2023-08-29T16:00:00`). Must be provided with `masterEventId` if `id` is not provided. |
+| `recurrenceIdTimeZone` | String | No       | Optional timezone for the `recurrenceId` (not required for all-day events).                                                                                              |
 
 All other event fields are optional for updates. Only include the fields you want to change.
 
 <Callout type="info" emoji="💡">
-  When updating timing fields (`start`, `duration`, `timeZone`, `showWithoutTime`), you must provide all four together. For example, to change only the start time, you must also include the current values for `duration`, `timeZone`, and `showWithoutTime`.
+  When updating timing fields (`start`, `duration`, `timeZone`,
+  `showWithoutTime`), you must provide all four together. For example, to change
+  only the start time, you must also include the current values for `duration`,
+  `timeZone`, and `showWithoutTime`.
 </Callout>
 
 <Callout type="info" emoji="💡">
@@ -383,14 +392,11 @@ All other event fields are optional for updates. Only include the fields you wan
   1. Using the instance's direct `id` (if you have it)
   2. Using `masterEventId` + `recurrenceId` (the LocalDateTime of the instance)
 
-  Example: To update the August 29th instance of a recurring meeting, you can provide `masterEventId` (the ID of the recurring series) and `recurrenceId: "2023-08-29T16:00:00"` instead of the instance's direct ID.
+Example: To update the August 29th instance of a recurring meeting, you can provide `masterEventId` (the ID of the recurring series) and `recurrenceId: "2023-08-29T16:00:00"` instead of the instance's direct ID.
+
 </Callout>
 
 Other fields of an event are described in the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/).
-
-<Callout type="warning" emoji="⚠️">
-  Currently `seriesUpdateMode` only supports the default value (`single`).
-</Callout>
 
 <Callout type="info" emoji="💡">
   Updates are patch updates. Only the fields that are provided will be updated.
@@ -445,11 +451,12 @@ Alerts can be updated for Google Calendar events using the `/events/update` endp
 
 **Add a new alert**: Include the alert with its properties. The alert ID must be calculated using the encoding formula below:
 
-Alert ID = base64(JSON.stringify({ "a": action, "to": offset }, with keys sorted alphabetically))
+`Alert ID = base64(JSON.stringify({ "a": action, "to": offset })`, with keys sorted alphabetically
 
 You can use standard base64 encoding libraries in your language of choice (e.g., `btoa()` in JavaScript, `base64` module in Python, `Buffer.from().toString('base64')` in Node.js).
 
 Example calculation for an alert with `offset: "-PT30M"` and `action: "display"`:
+
 ```javascript
 // JavaScript example
 const alertId = btoa(JSON.stringify({ a: "display", to: "-PT30M" }));
@@ -476,6 +483,7 @@ const alertId = btoa(JSON.stringify({ a: "display", to: "-PT30M" }));
 ```
 
 **Remove an alert**: Calculate the alert ID using the same formula above, then set that alert to `null`:
+
 ```json
 {
   "accountId": "640a62c9aa5b7e06cf420000",
@@ -488,6 +496,7 @@ const alertId = btoa(JSON.stringify({ a: "display", to: "-PT30M" }));
 ```
 
 **Use default calendar alerts**: Set `useDefaultAlerts` to `true` to use the calendar's default alert settings instead of custom alerts:
+
 ```json
 {
   "accountId": "640a62c9aa5b7e06cf420000",
@@ -504,6 +513,7 @@ When `useDefaultAlerts` is `true`, the `alerts` field should not be set, as the 
 Participants can be updated using the `/events/update` endpoint with patch operations:
 
 **Add a new participant**: Include the participant with their details. The participant ID can be the participant's email address:
+
 ```json
 {
   "accountId": "640a62c9aa5b7e06cf420000",
@@ -524,10 +534,13 @@ Participants can be updated using the `/events/update` endpoint with patch opera
 ```
 
 <Callout type="info" emoji="💡">
-  **Participant updates are patch operations**: When you update participants, existing participants not mentioned remain unchanged. Only participants you explicitly include (to add/modify) or set to `null` (to remove) are affected.
+  **Participant updates are patch operations**: When you update participants,
+  existing participants not mentioned remain unchanged. Only participants you
+  explicitly include (to add/modify) or set to `null` (to remove) are affected.
 </Callout>
 
 **Remove a participant**: Set the participant to `null` using their email address:
+
 ```json
 {
   "accountId": "640a62c9aa5b7e06cf420000",
@@ -538,7 +551,6 @@ Participants can be updated using the `/events/update` endpoint with patch opera
   }
 }
 ```
-
 
 ## Request the creation of a virtual meeting room
 
@@ -580,9 +592,7 @@ Please notice that once a room has been attached to an event it cannot be remove
 
 <Callout type="info" emoji="💡">
   Notice that Google Meet cannot be used on an Office 365 calendar. Similarly
-  Microsoft Teams cannot be used on a Google Calendar. Usually this is not an
-  issue, as these services are always used together with the corresponding
-  calendar.
+  Microsoft Teams cannot be used on a Google Calendar.
 </Callout>
 
 <Callout type="info" emoji="💡">
@@ -629,10 +639,6 @@ The following endpoint can be used to update an event in a given calendar.
 | `accountId`        | Body  | -        | Yes      | The ID of the account the event belongs to.                                                                                                                                                                                              |
 | `calendarId`       | Body  | -        | Yes      | The ID of the calendar the event belongs to.                                                                                                                                                                                             |
 
-<Callout type="warning" emoji="⚠️">
-  Currently `seriesUpdateMode` only supports the default value (`single`).
-</Callout>
-
 ## Common Validation Errors
 
 When creating or updating events, you may encounter validation errors. Here are the most common errors and how to resolve them:
@@ -640,6 +646,7 @@ When creating or updating events, you may encounter validation errors. Here are 
 ### Missing Required Timing Fields
 
 **Error Message**:
+
 ```
 Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provided together. `timeZone` can be `null` to indicate floating events.
 ```
@@ -649,6 +656,7 @@ Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provide
 **Solution**: Always provide all four fields together: `start`, `duration`, `timeZone`, and `showWithoutTime`.
 
 **Example**:
+
 ```json
 {
   "start": "2023-03-01T10:15:00",
@@ -663,6 +671,7 @@ Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provide
 ### Invalid Timezone
 
 **Error Message**:
+
 ```
 Event 'timeZone' should be a valid IANA time zone (e.g. Europe/Paris)
 ```
@@ -679,6 +688,7 @@ Event 'timeZone' should be a valid IANA time zone (e.g. Europe/Paris)
 ### Invalid Duration Format
 
 **Error Message**:
+
 ```
 Event `duration` should be a valid ISO8601 duration (e.g. P1D)
 ```
@@ -688,6 +698,7 @@ Event `duration` should be a valid ISO8601 duration (e.g. P1D)
 **Solution**: Use ISO 8601 duration format: `PT[hours]H[minutes]M` or `P[days]D`
 
 **Valid Examples**:
+
 - `PT1H` - 1 hour
 - `PT30M` - 30 minutes
 - `PT1H30M` - 1 hour 30 minutes
@@ -698,6 +709,7 @@ Event `duration` should be a valid ISO8601 duration (e.g. P1D)
 ### Event Identification Error
 
 **Error Message**:
+
 ```
 Event must have either 'id' or both 'masterEventId' and 'recurrenceId'
 ```
@@ -705,5 +717,6 @@ Event must have either 'id' or both 'masterEventId' and 'recurrenceId'
 **Cause**: When updating/deleting an event, you didn't provide a valid way to identify it.
 
 **Solution**: Provide either:
+
 1. The event's direct `id`, OR
 2. Both `masterEventId` and `recurrenceId` (for recurring event instances)
