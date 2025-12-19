@@ -36,11 +36,11 @@ Returns a list of tasks, optionally filtered by update time.
 
 | Parameter      | Type  | Default | Required | Description                                                    |
 | :------------- | :---- | :------ | :------- | :------------------------------------------------------------- |
-| `limit`        | Query | -       | No       | Maximum number of tasks to return.                             |
+| `limit`        | Query | 100     | No       | Maximum number of tasks to return (max 100).                   |
 | `updatedAfter` | Query | -       | No       | Only return tasks updated after this ISO 8601 datetime.        |
 
 <Callout type="warning" emoji="⚠️">
-  The Tasks API is primarily designed for creating tasks in Morgen from unsupported integrations.
+  The Tasks API is primarily designed for creating tasks in Morgen from unsupported integrations using apps like Zapier.
   Listing tasks has a higher rate limit cost based on the `limit` parameter.
   See [Rate Limits](/rate-limits) for details.
 </Callout>
@@ -515,60 +515,6 @@ Mark a completed task as not completed.
 | :---- | :--- | :------- | :---------- |
 | `id` | String | Yes | The Morgen ID of the task to reopen. |
 | `occurrenceStart` | String | No | For recurring tasks: ISO 8601 datetime of the specific occurrence to reopen. |
-
-### Response
-
-Returns HTTP 204 No Content on success.
-
-## Create a time tracking interval
-
-Record time spent working on a task.
-
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/tasks/tracking/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({
-              "taskId": "<TASK_ID>",
-              "start": "2023-03-15T09:00:00Z",
-              "duration": "PT2H30M",
-              "billable": true
-            })
-        });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/tasks/tracking/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({
-              "taskId": "<TASK_ID>",
-              "start": "2023-03-15T09:00:00Z",
-              "duration": "PT2H30M",
-              "billable": true
-            })
-        });
-        ```
-    </Tabs.Tab>
-</Tabs>
-
-### Request Body Fields
-
-| Field | Type | Required | Description |
-| :---- | :--- | :------- | :---------- |
-| `taskId` | String | Yes | The Morgen ID of the task to track time for. |
-| `start` | String | Yes | Start time of the interval in ISO 8601 format. |
-| `duration` | String | Yes | Duration in ISO 8601 format (e.g., `"PT2H30M"` for 2 hours 30 minutes). |
-| `billable` | Boolean | No | Whether this time is billable. Default: `false`. |
 
 ### Response
 
