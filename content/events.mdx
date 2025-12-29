@@ -1,4 +1,4 @@
-import { Callout, Tabs } from "nextra/components";
+import { Callout } from "nextra/components";
 
 # Events
 
@@ -13,30 +13,18 @@ Events are retrieved in a given time window, and recurring events
 are automatically expanded to their individual occurrences.
 Deleted or cancelled events are not included in the response.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/list?accountId=<ACCOUNT_ID>&calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME>", {
-            method: "GET",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            }
-    });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/list?accountId=<ACCOUNT_ID>&calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME>", {
-            method: "GET",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            }
-    });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch(
+  "https://api.morgen.so/v3/events/list?accountId=<ACCOUNT_ID>&calendarIds=<CALENDAR_IDS>&start=<START_DATETIME>&end=<END_DATETIME>",
+  {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: "ApiKey <API_KEY>",
+    },
+  }
+);
+```
 
 | Parameter     | Type  | Default | Required | Description                                                                                                                                                                                                                             |
 | :------------ | :---- | :------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -281,32 +269,16 @@ For Google Calendar events, you can set the event color using the `google.com:co
 Morgen offers an endpoint to create events in a given calendar.
 The event is created in the calendar of the account identified by the `accountId` parameter.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, ...eventfields})
-            });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, ...eventfields})
-        });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/events/create", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, ...eventfields})
+});
+```
 
 ### Request Body Fields
 
@@ -335,32 +307,16 @@ Other fields from the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc
 
 The following endpoint can be used to update an event in a given calendar.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/update?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>, ...eventfields})
-        });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/update?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>, ...eventfields})
-        });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/events/update?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>, ...eventfields})
+});
+```
 
 | Parameter          | Type  | Default  | Required | Description                                                                                                                                                                                                                              |
 | :----------------- | :---- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -405,42 +361,21 @@ Other fields of an event are described in the [JSCalendar standard](https://data
 
 Here is an example of a request to update an event title, while leaving all other fields unchanged:
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/update", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({
-              "accountId": "0123123", 
-              "calendarId": "WyJhbmNvbmEubXJjQGdtYWl", 
-              "id": "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
-              "title": "Title updated"
-            })
-    });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/update", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({
-              "accountId": "0123123", 
-              "calendarId": "WyJhbmNvbmEubXJjQGdtYWl", 
-              "id": "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
-              "title": "Title updated"
-            })
-    });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/events/update", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    accountId: "0123123",
+    calendarId: "WyJhbmNvbmEubXJjQGdtYWl",
+    id: "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
+    title: "Title updated",
+  }),
+});
+```
 
 ### Special cases
 
@@ -560,32 +495,16 @@ This will create a virtual meeting room with the default settings of the integra
 Google Meet will be added if the event is saved in a Google Calendar, while Microsoft Teams will be
 added if the event is saved in a Office 365 Calendar.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields})
-            });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/create", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields})
-            });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/events/create", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "morgen.so:requestVirtualRoom": "default", ...eventfields})
+});
+```
 
 Please notice that once a room has been attached to an event it cannot be removed with an update.
 
@@ -604,32 +523,16 @@ Please notice that once a room has been attached to an event it cannot be remove
 
 The following endpoint can be used to update an event in a given calendar.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>})
-            });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>})
-            });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify({"accountId": <ACCOUNT_ID>, "calendarId": <CALENDAR_ID>, "id": <EVENT_ID>})
+});
+```
 
 | Parameter          | Type  | Default  | Required | Description                                                                                                                                                                                                                              |
 | :----------------- | :---- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

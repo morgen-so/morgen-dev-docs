@@ -1,6 +1,7 @@
-import {Steps} from 'nextra/components';
+import { Steps } from "nextra/components";
 
 # Custom Workflows
+
 What would you do if you could write your own workflow?
 
 ## Introduction
@@ -18,23 +19,23 @@ Triggers include calendar updates and periodical, or you can launch your workflo
 
 Here are some examples of what you can implement:
 
-- 🤖 Fancy __auto-scheduling tomorrow's tasks__ from your third-party task manager? Schedule tasks aligned with your __true availability__.
+- 🤖 Fancy **auto-scheduling tomorrow's tasks** from your third-party task manager? Schedule tasks aligned with your **true availability**.
 
-- 💬 Dream of a __Slack notification__ for every invite from VIP email addresses? __We've got you__.
+- 💬 Dream of a **Slack notification** for every invite from VIP email addresses? **We've got you**.
 
-- 🚫 __Don't want meetings__ at certain times or days? __Auto-decline__ them.
+- 🚫 **Don't want meetings** at certain times or days? **Auto-decline** them.
 
-- 💌 How about a __Friday roundup__? Make your team aware of time spent in long meetings in the past week, __slacking them directly__ any useful stats.
+- 💌 How about a **Friday roundup**? Make your team aware of time spent in long meetings in the past week, **slacking them directly** any useful stats.
 
-- 🚀 Release something? Trigger a workflow __directly from the deployment script__ to set a reminder for your analyst 3 days later, ensuring they peek at the metrics.
+- 🚀 Release something? Trigger a workflow **directly from the deployment script** to set a reminder for your analyst 3 days later, ensuring they peek at the metrics.
 
 ## Create your first Custom Workflow
 
 <Steps>
-    ### Sign in to Morgen Assist:
+    ### Sign in to the Morgen platform:
 
-    Create a new account or sign in to [Morgen Assist](https://platform.morgen.so/dashboard).
-    If you already have a Morgen account, you can use it to sign in to Morgen Assist.
+    Create a new account or sign in to [Morgen platform](https://platform.morgen.so/dashboard).
+    If you already have a Morgen account, you can use it to sign in to Morgen platform.
 
     ### Connect your calendars:
     Before proceeding to create Custom Workflows, ensure that you've connected the calendar accounts you wish to control. This ensures your workflow has the visibility and permissions it needs.
@@ -49,6 +50,7 @@ Here are some examples of what you can implement:
     - Choose the calendar you want to trigger the workflow. When any event is added, updated or removed, the workflow will run.
     - Select the calendars you want control over within your script.
     - Provide your own script to run when the workflow is triggered.
+
 </Steps>
 
 ## Next Steps
@@ -59,10 +61,13 @@ or check out the documentation on the [Morgen API](/introduction).
 Alternatively, you might want to step out of the web app and back into the comfort of your own dev environment with the [Morgen Custom Workflow SDK](https://github.com/morgen-so/morgen-cw-sdk)
 
 ## Data Types
+
 Here are some data type references you might find useful in the development of your first workflows:
 
 ### Trigger Data
+
 The `trigger` argument is always passed to your script when the workflow is triggered.
+
 ```js
 async function run(trigger) {
   const {
@@ -87,8 +92,10 @@ async function run(trigger) {
 ```
 
 ### Event from `eventUpdates`
+
 The event object returned from `eventUpdates`.
 See the [JSCalendar docs](https://www.rfc-editor.org/rfc/rfc8984.html) for details.
+
 ```json
 {
     "@type": "Event",
@@ -214,58 +221,59 @@ See the [JSCalendar docs](https://www.rfc-editor.org/rfc/rfc8984.html) for detai
 ```
 
 ## Utilities
+
 Here are some utility functions you can use in your custom workflow scripts:
 
 ### Wrapper for fetching Morgen APIs
+
 This wrapper will make it easier to make requests to Morgen APIs using the [`fetch` interface](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 It uses the global `TOKEN` variable, which stores your own personal access token to make calls to our API.
 You can use this to make requests to `https://api.morgen.so` for:
- - fetching/updating calendar events and tasks
- - interacting with your other accounts
+
+- fetching/updating calendar events and tasks
+- interacting with your other accounts
 
 ```js
 async function fetchMorgen(url, opts) {
-  return fetch(
-    url,
-    {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(global.TOKEN)}`,
-        Accept: 'application/json',
-        ["Content-Type"]: 'application/json',
-        ...opts.headers,
-      },
-      ...opts,
-    }
-  );
+  return fetch(url, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(global.TOKEN)}`,
+      Accept: "application/json",
+      ["Content-Type"]: "application/json",
+      ...opts.headers,
+    },
+    ...opts,
+  });
 }
 ```
 
 ### Get a ChatGPT prompt response
+
 The code snippet below demonstrates how to use the `getOpenAIResponse` function to generate chat responses using the OpenAI API. Before using this code, make sure you have your `OpenAI API token`.
+
 ```js
 async function getOpenAIResponse(prompt) {
-  const resp = fetch(
-    "https://api.openai.com/v1/chat/completions",
-    {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer [YOUR-TOKEN]',
-        Accepts: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        "model": "gpt-3.5-turbo",
-        "messages": [{
-          "role": "user",
-          "content": prompt
-        }],
-        "temperature": 0.7
-      })
-    }
-  )
+  const resp = fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer [YOUR-TOKEN]",
+      Accepts: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+    }),
+  });
   const parsed = JSON.parse(resp);
   if (parsed.error) {
-    throw new Error('Error with OpenAI: ' + JSON.stringify(parsed.error));
+    throw new Error("Error with OpenAI: " + JSON.stringify(parsed.error));
     return;
   }
   return parsed.choices[0].message.content;
@@ -273,9 +281,11 @@ async function getOpenAIResponse(prompt) {
 ```
 
 ## Custom Workflows Examples
+
 Here are some examples of custom workflows that you can create:
 
 ### Create an Event via Morgen API
+
 The following code snippet shows how to use the `fetchMorgen` utility to create a new event using the Morgen API.
 
 ```js
@@ -302,28 +312,29 @@ async function run(trigger) {
 ```
 
 ### Send a Slack Message
+
 The following code snippet shows how to receive a Slack message when something changes in your calendar.
+
 ```js
- async function run(trigger) {
-    const slackToken = "xorb-[your slack bot access token]";
-    const resp = await fetch(
-      "https://api.slack.com/api/chat.postMessage", {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${slackToken}`,
-        Accept: 'application/json',
-        ["Content-Type"]: 'application/json',
-      },
-      body: JSON.stringify({
-        channel: '@Luke',
-        text: 'Hi there, something changed in your calendar!'
-      })
-    }
-  );
+async function run(trigger) {
+  const slackToken = "xorb-[your slack bot access token]";
+  const resp = await fetch("https://api.slack.com/api/chat.postMessage", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${slackToken}`,
+      Accept: "application/json",
+      ["Content-Type"]: "application/json",
+    },
+    body: JSON.stringify({
+      channel: "@Luke",
+      text: "Hi there, something changed in your calendar!",
+    }),
+  });
 }
 ```
 
 ### Custom Workflow: Generate event descriptions using ChatGPT
+
 The following code snippet shows how to use the `fetchMorgen` and `getOpenAIResponse` to put ChatGPT to work on your newly created events.
 
 It uses the prompt _"Write a movie trailer script for a movie of this title"_ to write a new event description via ChatGPT, and passes the result to the event update API.

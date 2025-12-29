@@ -2,7 +2,7 @@ export default {
   index: "Introduction",
   "---": {
     type: "separator",
-    title: "Morgen API"
+    title: "Morgen API",
   },
   introduction: "Introduction",
   authentication: "Authentication",
@@ -11,8 +11,12 @@ export default {
   calendars: "Calendars",
   events: "Events",
   tasks: "Tasks",
-  contact: {
-    title: "Contact",
-    href: "mailto:connect@morgen.so"
-  }
-}
+  "events-rsvp-draft": {
+    title: "Events RSVP",
+    display: "hidden",
+  },
+  "videoconferencing-draft": {
+    title: "Video conferencing",
+    display: "hidden",
+  },
+};

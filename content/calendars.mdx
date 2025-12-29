@@ -1,4 +1,3 @@
-import { Tabs } from "nextra/components";
 
 # Calendars
 
@@ -13,30 +12,15 @@ together with an `accountId` to reference the calendar in other API methods
 
 Returns a list of calendars over all connected calendar accounts.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/calendars/list", {
-            method: "GET",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            }
-    });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/calendars/list", {
-            method: "GET",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            }
-    });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/calendars/list", {
+    method: "GET",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    }
+});
+```
 
 Morgen data model for calendars is modeled after the [JMAP specification](https://jmap.io/spec-calendars.html), with some differences.
 
@@ -104,32 +88,16 @@ Here is an example response:
 At the moment, only the Morgen-specific metadata of a calendar can be updated.
 There is no API available to update the calendar information directly on the remote calendar provider.
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/calendars/update", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>",
-            body: JSON.stringify(<CALENDAR_UPDATE>)
-            }
-    });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://api.morgen.so/v3/calendars/update", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>",
-            body: JSON.stringify(<CALENDAR_UPDATE>)
-            }
-    });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://api.morgen.so/v3/calendars/update", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify(<CALENDAR_UPDATE>)
+});
+```
 
 | Parameter            | Type | Default | Required | Description                                                                                                                  |
 | :------------------- | :--- | :------ | :------- | :--------------------------------------------------------------------------------------------------------------------------- |

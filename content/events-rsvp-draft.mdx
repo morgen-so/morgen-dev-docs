@@ -1,4 +1,4 @@
-import { Callout, Tabs } from "nextra/components";
+import { Callout } from "nextra/components";
 
 This is not supported by the backend yet, but it was not available before either.
 
@@ -7,32 +7,16 @@ This is not supported by the backend yet, but it was not available before either
 An event can be accepted, declined or tentatively accepted by the user.
 This is done by sending a POST request to the following endpoints:
 
-<Tabs items={['API Key', 'JWT Token']}>
-    <Tabs.Tab>
-        ```js
-        fetch("https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "ApiKey <API_KEY>"
-            },
-            body: JSON.stringify({"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>})
-        });
-        ```
-    </Tabs.Tab>
-    <Tabs.Tab>
-        ```js
-        fetch("https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE>", {
-            method: "POST",
-            headers: {
-            "accept": "application/json",
-            "Authorization": "Bearer <JWT>"
-            },
-            body: JSON.stringify({"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>})
-        });
-        ```
-    </Tabs.Tab>
-</Tabs>
+```js
+fetch("https://sync.morgen.so/v1/events/<RSVP_ACTION>?seriesUpdateMode=<UPDATE_MODE>", {
+    method: "POST",
+    headers: {
+        "accept": "application/json",
+        "Authorization": "ApiKey <API_KEY>"
+    },
+    body: JSON.stringify({"id": <EVENT_ID>, "comment": <COMMENT>, "notifyOrganizer": <true|false>})
+});
+```
 
 The last segment of the URL marked with `<RSVP_ACTION>` defines the action to be performed.
 Possible values are:

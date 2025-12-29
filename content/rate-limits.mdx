@@ -1,15 +1,21 @@
 import { Callout } from "nextra/components";
+import { JwtContent } from "../components/jwt-content";
 
 # Rate Limits
 
-The Morgen API enforces rate limits to ensure fair usage and system stability. Rate limits are applied per user and vary based on authentication method.
+The Morgen API enforces rate limits to ensure fair usage and system stability. Rate limits are applied per user.
 
 ## Rate Limit Values
 
 | Authentication | Limit | Window |
 | :------------- | :---- | :----- |
 | API Key | 250 points | 15 minutes |
+
+<JwtContent>
+
 | JWT Token | 300 requests | 15 minutes |
+
+</JwtContent>
 
 ## Points System (API Key)
 
