@@ -9,7 +9,7 @@ The Morgen API enforces rate limits to ensure fair usage and system stability. R
 
 | Authentication | Limit | Window |
 | :------------- | :---- | :----- |
-| API Key | 250 points | 15 minutes |
+| API Key | 100 points | 15 minutes |
 
 <JwtContent>
 
@@ -19,35 +19,29 @@ The Morgen API enforces rate limits to ensure fair usage and system stability. R
 
 ## Points System (API Key)
 
-When using API Key authentication, requests consume points based on the operation:
+When using API Key authentication, requests consume points based on the endpoint:
 
-| Operation | Points Cost |
-| :-------- | :---------- |
-| Single resource operations (get, create, update, delete) | 1 point |
-| List operations | `min(limit, 100)` points |
-
-For list operations, the points cost is based on the `limit` query parameter, capped at 100 points per request.
-
-<Callout type="info" emoji="💡">
-  To optimize your rate limit usage, use the `updatedAfter` parameter to fetch only recently changed resources instead of listing all items.
-</Callout>
+| Endpoint | Points Cost |
+| :------- | :---------- |
+| `/list` endpoints | 10 points |
+| All other endpoints | 1 point |
 
 ## Rate Limit Headers
 
-Every API response includes headers to help you track your rate limit usage:
+Every API response includes headers to help you track your rate limit usage. These headers follow the [IETF draft standard](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/).
 
 | Header | Description |
 | :----- | :---------- |
 | `RateLimit-Limit` | Maximum points/requests allowed in the current window |
 | `RateLimit-Remaining` | Points/requests remaining in the current window |
 | `RateLimit-Reset` | Seconds until the rate limit window resets |
-| `Retry-After` | Total seconds to wait before retrying, up to 900 seconds (15 minutes) (only present on 429 responses) |
+| `Retry-After` | Seconds to wait before retrying (only present when `RateLimit-Remaining` is 0) |
 
 ### Example Headers
 
 ```
-RateLimit-Limit: 250
-RateLimit-Remaining: 150
+RateLimit-Limit: 100
+RateLimit-Remaining: 90
 RateLimit-Reset: 459
 ```
 
@@ -59,7 +53,6 @@ When you exceed the rate limit, the API returns a `429 Too Many Requests` respon
 
 - Monitor the `RateLimit-Remaining` header to avoid hitting limits
 - Implement exponential backoff when receiving 429 responses
-- Use `updatedAfter` filters to reduce the number of items returned
+- Use `updatedAfter` filters to sync only recently changed resources
 - Cache responses where appropriate to reduce API calls
-- For list operations, request only what you need using the `limit` parameter
 
