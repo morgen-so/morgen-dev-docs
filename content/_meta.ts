@@ -11,6 +11,10 @@ export default {
   calendars: "Calendars",
   events: "Events",
   tasks: "Tasks",
+  "----": {
+    type: "separator",
+  },
+  changelog: "Changelog",
   "events-rsvp-draft": {
     title: "Events RSVP",
     display: "hidden",
