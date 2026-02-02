@@ -11,6 +11,7 @@ export default {
   calendars: "Calendars",
   events: "Events",
   tasks: "Tasks",
+  tags: "Tags",
   "----": {
     type: "separator",
   },

@@ -1,0 +1,213 @@
+import { Callout } from "nextra/components";
+
+# Tags
+
+Tags (also known as categories) allow you to organize and classify your events and tasks. You can create custom tags with names and colors, then apply them to your items for better organization.
+
+## Tag Object
+
+```typescript
+interface Tag {
+  id: string;       // UUID format (e.g., "550e8400-e29b-41d4-a716-446655440000")
+  name?: string;    // Display name of the tag
+  color?: string;   // Hex color code (e.g., "#FF0000")
+  updated?: string; // ISO 8601 timestamp of last update
+  deleted?: boolean; // Present and true only for deleted tags (in sync responses)
+}
+```
+
+## List tags
+
+Returns all tags for the authenticated user.
+
+```js
+fetch(
+  "https://api.morgen.so/v3/tags/list?limit=<LIMIT>&updatedAfter=<UPDATED_AFTER>",
+  {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: "ApiKey <API_KEY>",
+    },
+  }
+);
+```
+
+| Parameter      | Type  | Default | Required | Description                                                                                                         |
+| :------------- | :---- | :------ | :------- | :------------------------------------------------------------------------------------------------------------------ |
+| `limit`        | Query | -       | No       | Maximum number of tags to return.                                                                                   |
+| `updatedAfter` | Query | -       | No       | Only return tags updated after this ISO 8601 datetime. When provided, deleted tags are also returned with `deleted: true`. |
+
+### Response
+
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Work",
+    "color": "#A8D5BA",
+    "updated": "2024-01-15T10:30:00Z"
+  }
+]
+```
+
+### Sync Behavior
+
+- **Without `updatedAfter`**: Returns only active (non-deleted) tags.
+- **With `updatedAfter`**: Returns both updated and deleted tags since the given timestamp. Deleted tags have `deleted: true` and no `name`/`color`/`updated` fields.
+
+## Get a tag
+
+Retrieve a single tag by its ID.
+
+```js
+fetch("https://api.morgen.so/v3/tags?id=<TAG_ID>", {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+});
+```
+
+| Parameter | Type  | Default | Required | Description   |
+| :-------- | :---- | :------ | :------- | :------------ |
+| `id`      | Query | -       | Yes      | The tag ID.   |
+
+### Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Work",
+  "color": "#A8D5BA",
+  "updated": "2024-01-15T10:30:00Z"
+}
+```
+
+### Errors
+
+- `404 Not Found`: Tag does not exist.
+
+## Create a tag
+
+Create a new tag.
+
+```js
+fetch("https://api.morgen.so/v3/tags/create", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    name: "Personal",
+    color: "#FFD4B8",
+  }),
+});
+```
+
+### Request Body Fields
+
+| Field   | Type   | Required | Description                                               |
+| :------ | :----- | :------- | :-------------------------------------------------------- |
+| `name`  | String | Yes      | Tag name (minimum 1 character).                           |
+| `color` | String | No       | Hex color code (exactly 7 characters, e.g., `#FF0000`).   |
+
+### Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Personal",
+  "color": "#FFD4B8"
+}
+```
+
+### Errors
+
+- `400 Bad Request`: Invalid input (e.g., invalid color format, empty name).
+
+## Update a tag
+
+Update an existing tag. Only include the fields you want to change.
+
+```js
+fetch("https://api.morgen.so/v3/tags/update", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    id: "<TAG_ID>",
+    name: "Updated Name",
+    color: "#B8D4FF",
+  }),
+});
+```
+
+### Request Body Fields
+
+| Field   | Type   | Required | Description                                             |
+| :------ | :----- | :------- | :------------------------------------------------------ |
+| `id`    | String | Yes      | The tag ID to update.                                   |
+| `name`  | String | No       | New tag name (minimum 1 character if provided).         |
+| `color` | String | No       | New hex color code (exactly 7 characters).              |
+
+### Response
+
+Returns HTTP 204 No Content on success.
+
+### Errors
+
+- `404 Not Found`: Tag does not exist.
+- `400 Bad Request`: Invalid input.
+
+<Callout type="info" emoji="💡">
+  Name and color cannot be unset (set to null/empty) once defined. You can only
+  change them to new values.
+</Callout>
+
+## Delete a tag
+
+Soft-delete a tag. The tag will still appear in sync responses (with `deleted: true`) when using `updatedAfter`.
+
+```js
+fetch("https://api.morgen.so/v3/tags/delete", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    id: "<TAG_ID>",
+  }),
+});
+```
+
+### Request Body Fields
+
+| Field | Type   | Required | Description           |
+| :---- | :----- | :------- | :-------------------- |
+| `id`  | String | Yes      | The tag ID to delete. |
+
+### Response
+
+Returns HTTP 204 No Content on success.
+
+### Errors
+
+- `404 Not Found`: Tag does not exist.
+
+## Sync Implementation Guide
+
+For implementing client-side sync:
+
+1. **Initial Sync**: Call `GET /v3/tags/list` without parameters to get all active tags.
+2. **Incremental Sync**: Store the latest `updated` timestamp from the response, then call `GET /v3/tags/list?updatedAfter=<timestamp>` to get changes.
+3. **Handle Deletions**: When a tag has `deleted: true`, remove it from local storage.
+4. **Conflict Resolution**: Tags are ordered by `updated` descending, so the most recently updated appears first.

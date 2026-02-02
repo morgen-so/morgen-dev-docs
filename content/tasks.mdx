@@ -87,6 +87,9 @@ Here is an example response for the `/tasks/list` endpoint:
           }
         },
 
+        // Array of tag IDs assigned to this task
+        "tags": ["550e8400-e29b-41d4-a716-446655440000"],
+
         // Morgen-specific derived fields (read-only)
         "morgen.so:derived": {
           "scheduled": true
@@ -120,6 +123,7 @@ Here is an example response for the `/tasks/list` endpoint:
 | `progress`               | String | Status: `"needs-action"`, `"in-process"`, `"completed"`, `"failed"`, `"cancelled"` |
 | `position`               | Number | Sort order within the task list                                                    |
 | `relatedTo`              | Object | Relations to other tasks (for subtask hierarchies)                                 |
+| `tags`                   | Array  | Array of tag IDs assigned to this task (see [Tags](/tags))                         |
 | `created`                | String | Creation timestamp (UTC)                                                           |
 | `updated`                | String | Last update timestamp (UTC)                                                        |
 
@@ -197,6 +201,7 @@ fetch("https://api.morgen.so/v3/tasks/create", {
 | `priority`               | Number | No       | Priority: 0 (undefined), 1 (highest) to 9 (lowest).                              |
 | `progress`               | String | No       | Initial status: `"needs-action"` or `"completed"`.                               |
 | `relatedTo`              | Object | No       | Relations for creating subtasks.                                                 |
+| `tags`                   | Array  | No       | Array of tag IDs to assign to the task (see [Tags](/tags)).                      |
 
 ### Response
 
@@ -222,6 +227,25 @@ To create a subtask, use the `relatedTo` field to specify the parent task:
     }
   }
 }
+```
+
+### Creating a Task with Tags
+
+To assign tags to a task, provide an array of tag IDs. You must first create the tags using the [Tags API](/tags).
+
+```js
+fetch("https://api.morgen.so/v3/tasks/create", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    title: "Important work task",
+    tags: ["550e8400-e29b-41d4-a716-446655440000", "661f9511-f30c-52e5-b827-557766551111"],
+  }),
+});
 ```
 
 ## Update a task
@@ -254,7 +278,7 @@ fetch("https://api.morgen.so/v3/tasks/update", {
 | `taskListId`  | String | No       | Move task to a different task list.  |
 | `priority`    | Number | No       | Updated priority (0-9).              |
 | `progress`    | String | No       | Updated status.                      |
-| `labels`      | Array  | No       | Task labels.                         |
+| `tags`        | Array  | No       | Array of tag IDs (see [Tags](/tags)).|
 
 <Callout type="info" emoji="💡">
   Updates are patch updates. Only the fields you provide will be updated. All
