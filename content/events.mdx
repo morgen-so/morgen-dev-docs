@@ -289,7 +289,7 @@ fetch("https://api.morgen.so/v3/events/create", {
 | `title`                  | String         | Yes      | The title/summary of the event.                                                                                |
 | `start`                  | String         | Yes      | Start time in LocalDateTime format (e.g., `2023-03-01T10:15:00`).                                              |
 | `duration`               | String         | Yes      | Duration in ISO 8601 format (e.g., `PT1H` for 1 hour, `PT30M` for 30 minutes).                                 |
-| `timeZone`               | String or null | Yes      | IANA timezone (e.g., `Europe/Paris`). Use `null` for floating events (no timezone).                            |
+| `timeZone`               | String         | Yes      | IANA timezone for the event (e.g., `Europe/Paris`).                                                            |
 | `showWithoutTime`        | Boolean        | Yes      | `true` for all-day events, `false` for timed events.                                                           |
 | `description`            | String         | No       | Event description. Can be plain text or HTML (specify with `descriptionContentType`).                          |
 | `descriptionContentType` | String         | No       | Either `text/plain` or `text/html`. Default: `text/plain`.                                                     |
@@ -550,7 +550,7 @@ When creating or updating events, you may encounter validation errors. Here are 
 **Error Message**:
 
 ```
-Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provided together. `timeZone` can be `null` to indicate floating events.
+Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provided together.
 ```
 
 **Cause**: You provided some but not all of the required timing fields.
