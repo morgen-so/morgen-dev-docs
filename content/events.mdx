@@ -289,7 +289,7 @@ fetch("https://api.morgen.so/v3/events/create", {
 | `title`                  | String         | Yes      | The title/summary of the event.                                                                                |
 | `start`                  | String         | Yes      | Start time in LocalDateTime format (e.g., `2023-03-01T10:15:00`).                                              |
 | `duration`               | String         | Yes      | Duration in ISO 8601 format (e.g., `PT1H` for 1 hour, `PT30M` for 30 minutes).                                 |
-| `timeZone`               | String or null | Yes      | IANA timezone (e.g., `Europe/Paris`). Use `null` for floating events (no timezone).                            |
+| `timeZone`               | String or null | Yes      | IANA timezone for timed events (e.g., `Europe/Paris`). Use `null` for all-day events (`showWithoutTime: true`). See the note below on floating timed events. |
 | `showWithoutTime`        | Boolean        | Yes      | `true` for all-day events, `false` for timed events.                                                           |
 | `description`            | String         | No       | Event description. Can be plain text or HTML (specify with `descriptionContentType`).                          |
 | `descriptionContentType` | String         | No       | Either `text/plain` or `text/html`. Default: `text/plain`.                                                     |
@@ -302,6 +302,18 @@ fetch("https://api.morgen.so/v3/events/create", {
 | `recurrenceRules`        | Array          | No       | Array of recurrence rule objects for recurring events.                                                         |
 
 Other fields from the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/) are also supported.
+
+<Callout type="warning" emoji="⚠️">
+  **Floating (no-timezone) timed events are not reliably preserved.** The API
+  accepts `timeZone: null` on a timed event (`showWithoutTime: false`), but a
+  floating time is not currently carried through end to end when the event is
+  written to a connected calendar, and the behavior varies by provider:
+  iCloud/CalDAV rejects a timed event that has no timezone, and Microsoft 365
+  fills in a concrete zone (often `Africa/Abidjan`, UTC+0) rather than keeping
+  the time floating. For timed events, always provide an explicit IANA timezone.
+  `null` is intended for all-day events (`showWithoutTime: true`), where no
+  timezone applies.
+</Callout>
 
 ## Update an event
 
@@ -556,6 +568,8 @@ Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provide
 **Cause**: You provided some but not all of the required timing fields.
 
 **Solution**: Always provide all four fields together: `start`, `duration`, `timeZone`, and `showWithoutTime`.
+
+**Note**: Although the error message mentions that `timeZone` can be `null`, reserve `null` for all-day events (`showWithoutTime: true`). Do not use it for floating (no-timezone) timed events: as described in the warning under [Create an event](#create-an-event), those are not reliably preserved across calendar backends (providers may reject them or normalize them to a concrete zone). For timed events, always provide an explicit IANA timezone.
 
 **Example**:
 
