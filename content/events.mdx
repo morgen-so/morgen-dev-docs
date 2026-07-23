@@ -569,6 +569,8 @@ Properties `start`, `duration`, `timeZone` and `showWithoutTime` must be provide
 
 **Solution**: Always provide all four fields together: `start`, `duration`, `timeZone`, and `showWithoutTime`.
 
+**Note**: Although the error message mentions that `timeZone` can be `null`, reserve `null` for all-day events (`showWithoutTime: true`). Do not use it for floating (no-timezone) timed events: as described in the warning under [Create an event](#create-an-event), those are not reliably preserved across calendar backends (providers may reject them or normalize them to a concrete zone). For timed events, always provide an explicit IANA timezone.
+
 **Example**:
 
 ```json
