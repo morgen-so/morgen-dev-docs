@@ -25,8 +25,14 @@ fetch(
 
 | Parameter      | Type  | Default | Required | Description                                                     |
 | :------------- | :---- | :------ | :------- | :-------------------------------------------------------------- |
-| `limit`        | Query | 100     | No       | Maximum number of tasks to return (max 100).                    |
+| `limit`        | Query | 1       | No       | Maximum number of tasks to return (max 100).                    |
 | `updatedAfter` | Query | -       | No       | Only return tasks updated/created after this ISO 8601 datetime. |
+
+<Callout type="warning" emoji="⚠️">
+  **`limit` defaults to 1, not to the maximum.** Omitting it returns a single
+  task, which is easy to misread as an almost empty result. Always set it
+  explicitly.
+</Callout>
 
 <Callout type="warning" emoji="⚠️">
   The Tasks API is primarily designed for creating tasks in Morgen from
@@ -44,62 +50,35 @@ Here is an example response for the `/tasks/list` endpoint:
     "tasks": [
       {
         "@type": "Task",
-
-        // Morgen ID for task
         "id": "WyJBUU1rQURaa1lXWXpOel...",
-
-        // Morgen ID for the account
         "accountId": "640a62c9aa5b7e06cf420000",
-
         "integrationId": "morgen",
-
-        // Task list this task belongs to
         "taskListId": "default",
-
         "created": "2023-02-28T11:50:57",
         "updated": "2023-02-28T17:56:44",
-
         "title": "Review quarterly report",
         "description": "Review and provide feedback on Q4 report",
         "descriptionContentType": "text/plain",
-
-        // Due date in LocalDateTime format
         "due": "2023-03-15T17:00:00",
         "timeZone": "Europe/Berlin",
-
-        // Estimated time to complete (ISO 8601 duration)
         "estimatedDuration": "PT2H",
-
-        // Priority: 0 = undefined, 1 = highest, 9 = lowest
         "priority": 1,
-
-        // Task completion status
         "progress": "needs-action",
-
-        // Position within the task list (for ordering)
         "position": 0,
-
-        // Relations to other tasks (for subtasks)
         "relatedTo": {
           "parent-task-id": {
             "@type": "Relation",
             "relation": { "parent": true }
           }
         },
-
-        // Array of tag IDs assigned to this task
         "tags": ["550e8400-e29b-41d4-a716-446655440000"],
-
-        // Morgen-specific derived fields (read-only)
         "morgen.so:derived": {
           "scheduled": true
         }
       }
     ],
-    // Label definitions for task metadata
-    "labelDefs": [...],
-    // Spaces/workspaces the tasks belong to
-    "spaces": [...]
+    "labelDefs": [],
+    "spaces": []
   }
 }
 ```
@@ -126,6 +105,13 @@ Here is an example response for the `/tasks/list` endpoint:
 | `tags`                   | Array  | Array of tag IDs assigned to this task (see [Tags](/tags))                         |
 | `created`                | String | Creation timestamp (UTC)                                                           |
 | `updated`                | String | Last update timestamp (UTC)                                                        |
+| `links`                  | Object | Links attached to the task, keyed by link ID                                       |
+| `morgen.so:derived`      | Object | Read-only fields derived from the rest of the task, for example `scheduled`        |
+
+Alongside `tasks`, the response envelope carries two more arrays: `labelDefs`,
+the label definitions referenced by task metadata, and `spaces`, the workspaces
+the tasks belong to. Both are siblings of `tasks` under `data`, not fields on a
+task.
 
 <Callout type="warning" emoji="⚠️">
   Additional fields might be added in the future. If you are storing tasks in
@@ -158,13 +144,20 @@ fetch("https://api.morgen.so/v3/tasks?id=<TASK_ID>", {
     "task": {
       "@type": "Task",
       "id": "WyJBUU1rQURaa1lXWXpOel...",
+      "taskListId": "default",
       "title": "Review quarterly report",
-      ...
+      "progress": "needs-action",
+      "created": "2023-02-28T11:50:57",
+      "updated": "2023-02-28T17:56:44"
     },
-    "labelDefs": [...]
+    "labelDefs": []
   }
 }
 ```
+
+The `task` object has the same shape as an entry in `/tasks/list`, see [Task
+Fields Reference](#task-fields-reference). Fields with no value are omitted
+rather than returned as `null`, so the exact set of keys varies by task.
 
 ## Create a task
 
@@ -204,6 +197,10 @@ fetch("https://api.morgen.so/v3/tasks/create", {
 | `tags`                   | Array  | No       | Array of tag IDs to assign to the task (see [Tags](/tags)).                      |
 
 ### Response
+
+Returns HTTP 200 OK on success, with the ID of the new task. Note that this is
+`200`, not `201`, and that the created task is not echoed back. If you need the
+full object, follow up with [Get a task](#get-a-task).
 
 ```json
 {
