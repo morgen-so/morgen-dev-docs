@@ -784,8 +784,8 @@ the Morgen API.
 
 ### Error body
 
-Errors that Morgen raises deliberately, which is everything in the table above
-except `500`, return this shape:
+Errors that Morgen raises deliberately return this shape. In practice that is
+every case in the table above other than an unexpected `500`:
 
 ```json
 {
