@@ -33,6 +33,32 @@ fetch(
 | `start`       | Query | -       | Yes      | Start of the time window in ISO 8601 format, e.g. `2023-03-01T00:00:00Z`                                                                                                                                                                |
 | `end`         | Query | -       | Yes      | End of the time window in ISO 8601 format, e.g. `2023-04-01T00:00:00Z`. This must be greater than `start`. The interval cannot be longer than 6 months. It is recommended to retrieve no more than 2 months of events at the same time. |
 
+<Callout type="warning" emoji="⚠️">
+  Unknown query parameters are rejected. Sending a parameter that is not in the
+  table above returns HTTP 400, it is not ignored.
+</Callout>
+
+### Response
+
+Returns HTTP 200 OK. The events are returned as an array under `data.events`:
+
+```json
+{
+  "data": {
+    "events": []
+  }
+}
+```
+
+See [Event schema](#event-schema) below for the shape of each event.
+
+<Callout type="warning" emoji="⚠️">
+  Listing events costs 10 points per request. If you only need to read back a
+  single event you already have the ID for, use [Get an
+  event](#get-an-event) instead, which costs 1 point. See [Rate
+  Limits](/rate-limits) for details.
+</Callout>
+
 ## Event schema
 
 Here is an example response for the `/events/list` endpoint described above:
@@ -43,85 +69,40 @@ Here is an example response for the `/events/list` endpoint described above:
     "events": [
       {
         "@type": "Event",
-
-        // Morgen ID for event
         "id": "WyJBUU1rQURaa1lXWXpOel...",
-
-        // 3rd-party iCalendar UID
         "uid": "kki3mce...@google.com",
-
-        // Morgen ID for the calendar
         "calendarId": "WyI2NDBhNjJjOW...",
-
-        // Morgen ID for the account
         "accountId": "640a62c9aa5b7e06cf420000",
-
         "integrationId": "o365",
-
-        // 3rd-party ID for the base event in the recurrence
         "baseEventId": "AAkALgAAAAAAHYQDEapmEc2by...",
-
-        // For recurring event instances: Morgen ID of the master recurring event
         "masterEventId": "WyI2NDBhNjJjOWFhNWI3ZTA2Y2Y0MjAwMDA...",
-        // For recurring event instances: 3rd-party ID of the master recurring event
         "masterBaseEventId": "AAkALgAAAAAAHYQDEapmEc2by...",
-
         "created": "2023-02-28T11:50:57",
         "updated": "2023-02-28T17:56:44",
-
-        // ID + timezone that identify this event within the recurrence
         "recurrenceId": "2023-08-29T16:00:00",
         "recurrenceIdTimeZone": "Europe/Zurich",
-
         "title": "Chat about Morgen",
         "description": "<html><body>Description of event, possibly in HTML format.</body></html>",
-        // Either "text/plain" or "text/html" depending on content
         "descriptionContentType": "text/html",
-
-        // Start time of the event. Notice that this does not include a time zone offset.
-        // Instead, the time zone is specified in the "timeZone" field.
         "start": "2023-03-01T10:15:00",
         "timeZone": "Europe/Berlin",
-
-        // Duration in ISO format: 'PT[hours]H' | 'PT[minutes]M'
         "duration": "PT25M",
-
-        // If true, this event is an all-day event. Otherwise it occurs at a specific time in the day.
         "showWithoutTime": false,
-
-        // Whether the event details can be displayed to others users with access to the calendar.
         "privacy": "public",
-
-        // Whether the event is marked "busy" for the participants. Otherwise "free".
         "freeBusyStatus": "free",
-
         "locations": {
           "1": {
             "@type": "Location",
             "name": "Morgen HQ, Forrlibuckstrasse 223"
           }
         },
-
         "participants": {
-          // Map of participant IDs to participants.
-          // The key can be the participant's email address or an internal ID.
           "doe@morgen.so": {
             "@type": "Participant",
             "name": "John Doe",
-
-            // Email address of the participant
-            // NOTE: Sometimes, the participant email is a group email,
-            //       e.g. if the event was created in a secondary Google
-            //       calendar.
             "email": "doe@morgen.so",
-
             "roles": {
-              // Whether this participant will be attending
               "attendee": true,
-
-              // Whether the participant owns the event and can
-              // therefore make changes that affect other
-              // participants
               "owner": true
             },
             "participationStatus": "needs-action"
@@ -133,37 +114,22 @@ Here is an example response for the `/events/list` endpoint described above:
             "roles": {
               "attendee": true
             },
-
-            // Indicates whether this participant is also the owner of
-            // the calendar account
             "accountOwner": true,
             "participationStatus": "needs-action"
-          },
-          ...
+          }
         },
-
-
         "alerts": {
-          // Map of alert IDs to alerts.
-          // Alert IDs are base64-encoded: btoa(JSON.stringify({ a: action, to: offset }))
           "eyJhIjoiZGlzcGxheSIsInRvIjoiLVBUMTVNIn0=": {
             "@type": "Alert",
             "trigger": {
               "@type": "OffsetTrigger",
-              // Offset in ISO format: 'PT[hours]H' | 'PT[minutes]M'
-              // In this case, 15 minutes before the event start time.
               "offset": "-PT15M",
-              "relativeTo": "start" // only "start" is supported at the current time
+              "relativeTo": "start"
             },
             "action": "display"
-          },
-          ...
+          }
         },
-
-        // Use default calendar alerts instead of custom alerts
         "useDefaultAlerts": false,
-
-        // Recurrence rules for recurring events
         "recurrenceRules": [
           {
             "@type": "RecurrenceRule",
@@ -172,56 +138,118 @@ Here is an example response for the `/events/list` endpoint described above:
             "byDay": [{ "@type": "NDay", "day": "mo" }]
           }
         ],
-
-        // Google Calendar specific fields
-        "google.com:colorId": "5", // Writable: Google's event color ID (1-11)
+        "google.com:colorId": "5",
         "google.com:hangoutLink": "https://meet.google.com/abc-defg-hij",
-      },
-
-      // Derived, read-only fields.
-      // For example a virtual room URL if found in the event description.
-      "morgen.so:derived": {
-        "virtualRoom": {
-          "url": "https://us02web.zoom.us/j/82...?pwd=..."
+        "morgen.so:derived": {
+          "virtualRoom": {
+            "url": "https://us02web.zoom.us/j/82...?pwd=..."
+          }
+        },
+        "morgen.so:metadata": {
+          "updated": "2023-09-25T08:53:36.793Z",
+          "categoryId": "9b5f823f-d690-4781-8783-95052ac05740@morgen.so",
+          "categoryName": "Morgen",
+          "categoryColor": "#CCEACD",
+          "progress": "needs-action",
+          "taskId": "0d464578-08ff-4df6-88b2-19083b296df7"
         }
-      },
-
-      // Metadata, read-only, Morgen-specific fields.
-      "morgen.so:metadata": {
-        "updated": "2023-09-25T08:53:36.793Z"
-        // Category-related fields
-        "categoryId": "9b5f823f-d690-4781-8783-95052ac05740@morgen.so",
-        "categoryName": "Morgen",
-        "categoryColor": "#CCEACD", // Hexadecimal color code
-        // Task-related fields. An event with a taskId will be displayed as a task in the Morgen calendar.
-        "progress": "needs-action", // Possible values: "needs-action", "completed".
-        "taskId": "0d464578-08ff-4df6-88b2-19083b296df7",
       }
     ]
   }
 }
-
 ```
+
+Fields with no value are omitted from the response rather than returned as
+`null`, so most of the fields above are absent on any given event. An empty
+object, such as `"alerts": {}`, is a value rather than an absent field and is
+returned as-is.
+
+### Event Fields Reference
+
+| Field                    | Type    | Description                                                                                                                                                 |
+| :----------------------- | :------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@type`                  | String  | Always `"Event"`                                                                                                                                            |
+| `id`                     | String  | Morgen's identifier for the event. See [Event IDs](#event-ids).                                                                                             |
+| `uid`                    | String  | The provider's iCalendar UID. This is **not** the `id`, and no endpoint accepts it in place of `id`.                                                         |
+| `calendarId`             | String  | Morgen ID of the calendar the event belongs to.                                                                                                             |
+| `accountId`              | String  | Morgen ID of the account the event belongs to.                                                                                                              |
+| `integrationId`          | String  | The provider the event came from, e.g. `"google"`, `"o365"`, `"caldav"`.                                                                                     |
+| `baseEventId`            | String  | The provider's ID for the base event. For recurring events this is the ID of the series, for non-recurring events it is the ID of the event itself.          |
+| `masterEventId`          | String  | Recurring instances only: the Morgen ID of the master recurring event. Can be used with `recurrenceId` to identify and update a specific instance.           |
+| `masterBaseEventId`      | String  | Recurring instances only: the provider's ID of the master recurring event. Not returned for non-recurring events.                                            |
+| `created`                | String  | Creation timestamp.                                                                                                                                         |
+| `updated`                | String  | Last update timestamp.                                                                                                                                      |
+| `recurrenceId`           | String  | Recurring instances only: the LocalDateTime that identifies this occurrence within the series, e.g. `"2023-08-29T16:00:00"`.                                 |
+| `recurrenceIdTimeZone`   | String  | IANA timezone for `recurrenceId`.                                                                                                                           |
+| `title`                  | String  | Event title/summary.                                                                                                                                        |
+| `description`            | String  | Event description, plain text or HTML.                                                                                                                      |
+| `descriptionContentType` | String  | Either `"text/plain"` or `"text/html"`, depending on the content of `description`.                                                                           |
+| `start`                  | String  | Start time in LocalDateTime format. Note that this carries **no** timezone offset, the zone is given separately in `timeZone`.                               |
+| `timeZone`               | String  | IANA timezone the `start` is expressed in.                                                                                                                  |
+| `duration`               | String  | Duration in ISO 8601 format, e.g. `"PT25M"`.                                                                                                                 |
+| `showWithoutTime`        | Boolean | `true` for an all-day event, `false` for an event at a specific time of day.                                                                                 |
+| `privacy`                | String  | `"public"`, `"private"` or `"secret"`. Whether the event details can be shown to other users with access to the calendar.                                    |
+| `freeBusyStatus`         | String  | `"free"` or `"busy"`. Whether the event marks the participants as busy.                                                                                      |
+| `locations`              | Object  | Map of location IDs to location objects.                                                                                                                    |
+| `participants`           | Object  | Map of participant IDs to participant objects. The key can be the participant's email address or an internal ID. Note that the email is sometimes a group address, for example when the event lives in a secondary Google calendar. |
+| `alerts`                 | Object  | Map of alert IDs to alert objects. The alert ID is derived from the alert's action and offset, see [Updating Alerts](#updating-alerts). Only `relativeTo: "start"` is currently supported. |
+| `useDefaultAlerts`       | Boolean | If `true`, the calendar's default alerts apply instead of the alerts in `alerts`.                                                                            |
+| `recurrenceRules`        | Array   | Recurrence rules, for recurring events.                                                                                                                     |
+| `google.com:colorId`     | String  | Google Calendar only. Read/write, see [Google Calendar Color ID](#google-calendar-color-id).                                                                 |
+| `google.com:hangoutLink` | String  | Google Calendar only. Read-only Google Meet link.                                                                                                           |
+| `morgen.so:derived`      | Object  | Read-only fields derived from the rest of the event, for example a virtual room URL found in the description.                                                |
+| `morgen.so:metadata`     | Object  | Read-only Morgen-specific metadata: `categoryId`, `categoryName`, `categoryColor` (hex), and the task fields `progress` (`"needs-action"` or `"completed"`) and `taskId`. An event with a `taskId` is displayed as a task in Morgen. |
+| `morgen.so:requestVirtualRoom` | String | Write-only. Requests creation of a virtual meeting room: `"default"`, `"googleMeet"` or `"microsoftTeams"`. See [Request the creation of a virtual meeting room](#request-the-creation-of-a-virtual-meeting-room). |
+
+### Event IDs
+
+The `id` field is Morgen's identifier for an event, and is what `/events/update`,
+`/events/delete` and `GET /v3/events` expect. Treat it as an **opaque string**:
+
+- **Do not parse it, construct it, or transform it.** Its internal format is an
+  implementation detail and may change without notice.
+- **Pass it back byte for byte**, exactly as you received it. Do not URL-decode,
+  re-encode, trim, or case-fold it.
+- **An `id` is only meaningful within the account it came from.** Always pair an
+  `id` with the same `accountId` it was returned with. IDs are not portable
+  between accounts, and using one against a different account fails or resolves
+  to the wrong event rather than being silently ignored.
+- **`id` and `calendarId` are not interchangeable.** They are different kinds of
+  identifier, and passing one where the other is expected fails.
+- **`uid` is not the `id`.** `uid` is the provider's iCalendar UID and is not
+  accepted by any endpoint that asks for an `id`.
+
+<Callout type="warning" emoji="⚠️">
+  **For recurring events, the `id` returned by `/events/create` is not the `id`
+  returned by `/events/list`.** Creating a recurring event returns the ID of the
+  master series. Listing events expands the series, so each occurrence comes back
+  with its own distinct instance ID. To match a listed occurrence back to the
+  series you created, compare its `masterEventId` field against the ID that
+  `create` returned, not its `id`.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  For **non-recurring** events, the ID returned by `create` is the same string
+  that `list` returns and that `update`, `delete` and `GET /v3/events` accept.
+</Callout>
+
+### Differences with JSCalendar
 
 Please refer to the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc8984/)
 for more information about the data model. Please consider the following differences:
 
-### Differences with JSCalendar
-
 #### Additional fields
 
-Morgen returns some additional fields for convenience and to provide more information about the event:
+Morgen returns some additional fields for convenience and to provide more
+information about the event: `integrationId`, `accountId`, `calendarId`,
+`baseEventId`, `masterEventId`, `masterBaseEventId`, `morgen.so:derived`,
+`morgen.so:metadata` and `useDefaultAlerts`.
 
-- `integrationId`: The ID of the integration the event belongs to.
-- `accountId`: The ID of the account the event belongs to.
-- `calendarId`: The ID of the calendar the event belongs to.
-- `baseEventId`: The provider ID of the base event the event belongs to. This is the ID of the recurring event for recurring events, and the ID of the event itself for non-recurring events.
-- `masterEventId`: The Morgen ID of the master recurring event (for recurring event instances only). Can be used with `recurrenceId` to identify and update specific instances.
-- `masterBaseEventId`: The provider ID of the master base event the event belongs to. This is the ID of the master recurring event for recurring events, and will not be returned for non-recurring events.
-- `morgen.so:derived`: An object containing useful fields derived from other event information. Read-only.
-- `morgen.so:metadata`: An object containing Morgen-specific metadata, such as the event category and the link to a task.
-- `morgen.so:requestVirtualRoom`: Writable field to request creation of a virtual meeting room (`"default"` | `"googleMeet"` | `"microsoftTeams"`).
-- `useDefaultAlerts`: Boolean flag to use the calendar's default alert settings instead of custom alerts.
+There is also one write-only field, `morgen.so:requestVirtualRoom`, which you can
+send on create and update but will never receive back.
+
+All of them are described in the [Event Fields
+Reference](#event-fields-reference).
 
 <Callout type="warning" emoji="⚠️">
   Additional fields might be added in the future. If you are storing the event
@@ -262,6 +290,61 @@ For Google Calendar events, you can set the event color using the `google.com:co
   This field only works for Google Calendar accounts. Attempting to set
   `google.com:colorId` on non-Google calendars (Office 365, iCloud, CalDAV,
   etc.) will have no effect.
+</Callout>
+
+## Get an event
+
+Retrieve a single event by its ID. Unlike `/events/list`, this does not require a
+time window and does not expand recurring series, it returns exactly the event
+whose ID you pass.
+
+```js
+fetch("https://api.morgen.so/v3/events?id=<EVENT_ID>", {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+});
+```
+
+| Parameter | Type  | Default | Required | Description                             |
+| :-------- | :---- | :------ | :------- | :-------------------------------------- |
+| `id`      | Query | -       | Yes      | The Morgen ID of the event to retrieve. |
+
+### Response
+
+Returns HTTP 200 OK with the event wrapped under `data.event`:
+
+```json
+{
+  "data": {
+    "event": {
+      "@type": "Event",
+      "id": "WyJBUU1rQURaa1lXWXpOel...",
+      "calendarId": "WyI2NDBhNjJjOW...",
+      "accountId": "640a62c9aa5b7e06cf420000",
+      "integrationId": "o365",
+      "title": "Chat about Morgen",
+      "start": "2023-03-01T10:15:00",
+      "timeZone": "Europe/Berlin",
+      "duration": "PT25M",
+      "showWithoutTime": false,
+      "privacy": "public",
+      "freeBusyStatus": "free"
+    }
+  }
+}
+```
+
+The event has the same shape as the entries returned by `/events/list`, see
+[Event schema](#event-schema).
+
+<Callout type="info" emoji="💡">
+  This endpoint costs 1 point per request, against 10 points for
+  `/events/list`. If you already have an event's ID, for example to read back an
+  event you just created or updated, prefer this endpoint. See [Rate
+  Limits](/rate-limits) for details.
 </Callout>
 
 ## Create an event
@@ -315,6 +398,57 @@ Other fields from the [JSCalendar standard](https://datatracker.ietf.org/doc/rfc
   timezone applies.
 </Callout>
 
+### Response
+
+Returns HTTP **200 OK** on success, not 201. The created event is returned in
+full, wrapped under `data.event`:
+
+```json
+{
+  "data": {
+    "event": {
+      "@type": "Event",
+      "id": "WyJBUU1rQURaa1lXWXpOel...",
+      "uid": "kki3mce...@google.com",
+      "calendarId": "WyI2NDBhNjJjOW...",
+      "accountId": "640a62c9aa5b7e06cf420000",
+      "integrationId": "google",
+      "baseEventId": "kki3mce...",
+      "created": "2023-03-01T09:04:22.000Z",
+      "updated": "2023-03-01T09:04:22.311Z",
+      "title": "Team Meeting",
+      "start": "2023-03-15T14:00:00",
+      "timeZone": "America/New_York",
+      "duration": "PT1H",
+      "showWithoutTime": false,
+      "privacy": "public",
+      "freeBusyStatus": "busy",
+      "alerts": {},
+      "useDefaultAlerts": true
+    }
+  }
+}
+```
+
+The returned event has the same shape as the entries from `/events/list`, see
+[Event schema](#event-schema). Fields with no value are omitted rather than
+returned as `null`, so the exact set of keys varies by provider and by what you
+sent. An empty object, such as the `"alerts": {}` above, is a value rather than
+an absent field and is returned as-is.
+
+Read `data.event.id` to get the ID of the new event. See [Event
+IDs](#event-ids), in particular the note about recurring events, before storing
+it or passing it to another endpoint.
+
+<Callout type="warning" emoji="⚠️">
+  The create response cannot be sent back to `/events/create` or
+  `/events/update` as-is. Those endpoints reject unknown fields with HTTP 400,
+  and the response contains read-only fields (`id`, `uid`, `baseEventId`,
+  `created`, `updated`, `integrationId`, `morgen.so:derived`, and others) that
+  they do not accept. Send only the fields documented for the endpoint you are
+  calling.
+</Callout>
+
 ## Update an event
 
 The following endpoint can be used to update an event in a given calendar.
@@ -332,7 +466,20 @@ fetch("https://api.morgen.so/v3/events/update?seriesUpdateMode=<UPDATE_MODE>", {
 
 | Parameter          | Type  | Default  | Required | Description                                                                                                                                                                                                                              |
 | :----------------- | :---- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `seriesUpdateMode` | Query | `single` | No       | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). This parameter has no effect on non-recurring events. |
+| `seriesUpdateMode` | Query | `single` | No       | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). |
+
+<Callout type="warning" emoji="⚠️">
+  **`seriesUpdateMode` is a query-string parameter only.** Putting it in the JSON
+  request body returns HTTP 400. The request body only accepts the event fields
+  documented below, and any property outside that set is rejected rather than
+  ignored.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  On a **non-recurring** event, only omitting `seriesUpdateMode` or sending
+  `single` is accepted. Sending `all` or `future` returns HTTP 400 with a message
+  such as "Cannot apply 'all' series update mode to non-recurring events".
+</Callout>
 
 ### Request Body Fields
 
@@ -388,6 +535,44 @@ fetch("https://api.morgen.so/v3/events/update", {
   }),
 });
 ```
+
+### Response
+
+Returns HTTP **200 OK** on success. The updated event is returned as the
+top-level response body.
+
+<Callout type="warning" emoji="⚠️">
+  Note the asymmetry: unlike `/events/create`, `/events/list` and
+  `GET /v3/events`, the update response is **not** wrapped in a `data` envelope.
+  The event is the response body itself.
+</Callout>
+
+```json
+{
+  "@type": "Event",
+  "id": "WyJhbmNvbmEubXJjQGdtYWlsLmNvbSI",
+  "calendarId": "WyJhbmNvbmEubXJjQGdtYWl",
+  "accountId": "640a62c9aa5b7e06cf420000",
+  "integrationId": "google",
+  "title": "Title updated",
+  "start": "2023-03-15T14:00:00",
+  "timeZone": "America/New_York",
+  "duration": "PT1H",
+  "showWithoutTime": false,
+  "privacy": "public",
+  "freeBusyStatus": "busy"
+}
+```
+
+The event has the same shape as the entries returned by `/events/list`, see
+[Event schema](#event-schema).
+
+<Callout type="info" emoji="💡">
+  When `seriesUpdateMode` is `all` or `future`, the update may act on the master
+  recurring event rather than the occurrence whose ID you sent, so the `id` in
+  the response is not necessarily the `id` you passed in. Read the `id` back from
+  the response rather than assuming it is unchanged.
+</Callout>
 
 ### Special cases
 
@@ -533,7 +718,7 @@ Please notice that once a room has been attached to an event it cannot be remove
 
 ## Delete an event
 
-The following endpoint can be used to update an event in a given calendar.
+The following endpoint can be used to delete an event from a given calendar.
 
 ```js
 fetch("https://api.morgen.so/v3/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
@@ -546,12 +731,112 @@ fetch("https://api.morgen.so/v3/events/delete?seriesUpdateMode=<UPDATE_MODE>", {
 });
 ```
 
-| Parameter          | Type  | Default  | Required | Description                                                                                                                                                                                                                              |
-| :----------------- | :---- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `seriesUpdateMode` | Query | `single` | No       | Defines how to update recurring events. Possible values are: `all` (update all events), `future` (update this and future occurrences), `single` (update this event only, default). This parameter has no effect on non-recurring events. |
-| `id`               | Body  | -        | Yes      | The ID of the event to update.                                                                                                                                                                                                           |
-| `accountId`        | Body  | -        | Yes      | The ID of the account the event belongs to.                                                                                                                                                                                              |
-| `calendarId`       | Body  | -        | Yes      | The ID of the calendar the event belongs to.                                                                                                                                                                                             |
+| Parameter          | Type  | Default  | Required | Description                                                                                                                                                                                                                       |
+| :----------------- | :---- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seriesUpdateMode` | Query | `single` | No       | Defines how to delete recurring events. Possible values are: `all` (delete the whole series), `future` (delete this and future occurrences), `single` (delete this occurrence only, default). |
+
+<Callout type="warning" emoji="⚠️">
+  **`seriesUpdateMode` is a query-string parameter only.** Putting it in the JSON
+  request body returns HTTP 400. The delete body accepts only the fields listed
+  below, and any property outside that set is rejected rather than ignored.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  On a **non-recurring** event, only omitting `seriesUpdateMode` or sending
+  `single` is accepted. Sending `all` or `future` returns HTTP 400 with a message
+  such as "Cannot apply 'all' series update mode to non-recurring events".
+</Callout>
+
+### Request Body Fields
+
+| Field        | Type   | Required | Description                                                                           |
+| :----------- | :----- | :------- | :------------------------------------------------------------------------------------ |
+| `id`         | String | Yes      | The Morgen ID of the event to delete. See [Event IDs](#event-ids).                     |
+| `accountId`  | String | Yes      | The ID of the account the event belongs to.                                            |
+| `calendarId` | String | Yes      | The ID of the calendar the event belongs to.                                           |
+
+These three fields are sufficient. Sending any other property in the body returns
+HTTP 400.
+
+### Response
+
+Returns HTTP **204 No Content** on success, with an **empty response body**.
+
+<Callout type="warning" emoji="⚠️">
+  There is no JSON body on a successful delete. Clients that unconditionally
+  parse the response as JSON will fail on the empty payload, check for 204 first.
+  In particular, the response does not tell you which event was removed, so when
+  using `seriesUpdateMode=all` or `future` you cannot learn from the response
+  which occurrences were affected.
+</Callout>
+
+## Errors
+
+Errors are produced by a single shared handler, so the status codes and body
+shapes below apply uniformly to every endpoint on this page, and to the rest of
+the Morgen API.
+
+| Status | When you will see it                                                                                                                                        |
+| :----- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400`  | The request failed validation: a missing or malformed field, an unknown property in the body or query string, or an ID that could not be resolved.           |
+| `401`  | The `Authorization` header is missing, malformed, or carries a key that is not valid. See [Authentication](/authentication).                                 |
+| `403`  | The key is valid but your plan does not include API access.                                                                                                  |
+| `429`  | You have exceeded your rate limit. See [Rate Limits](/rate-limits).                                                                                          |
+| `500`  | An unexpected server-side failure.                                                                                                                          |
+
+### Error body
+
+Errors that Morgen raises deliberately return this shape. In practice that is
+every case in the table above other than an unexpected `500`:
+
+```json
+{
+  "message": "Cannot apply 'all' series update mode to non-recurring events",
+  "status": 400,
+  "errorRef": "V1StGXR8Z5jd"
+}
+```
+
+| Field      | Always present | Description                                                                                                              |
+| :--------- | :------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| `message`  | Yes            | A human-readable description of the failure. Intended for logs and debugging, not for matching on programmatically.       |
+| `status`   | No             | The HTTP status code, repeated in the body. See the warning below.                                                        |
+| `errorRef` | Yes            | An identifier for this specific failure.                                                                                  |
+| `context`  | No             | Present on some errors, with extra structured detail about what failed.                                                   |
+
+Fields with no value are removed from the body entirely rather than sent as
+`null`, so do not expect a fixed set of keys.
+
+For request-validation failures, `message` is a JSON-encoded list describing each
+field that failed, so it can be long and is not a stable, human-friendly string.
+
+Unexpected errors return a shorter body, with the underlying message replaced by
+a generic one so that internal detail is not exposed:
+
+```json
+{
+  "message": "Something went wrong. Please retry or contact us at connect@morgen.so.",
+  "errorRef": "V1StGXR8Z5jd"
+}
+```
+
+<Callout type="warning" emoji="⚠️">
+  **Do not rely on `status` being present in the error body.** It appears only on
+  errors Morgen raises deliberately. On an unexpected failure the field is absent
+  entirely, so a client written as `if (body.status >= 400)` reads `undefined`,
+  the comparison is false, and the request is treated as having succeeded,
+  precisely at the moment something has actually gone wrong. **Branch on the HTTP
+  status line, and treat the body as diagnostic detail only.** Note that this is
+  not purely a `500` concern: a request whose body is not valid JSON, or which
+  exceeds the maximum payload size, is rejected before it reaches the endpoint
+  and also returns the shorter shape, despite carrying a `4xx` status line.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  Every error carries an `errorRef`, in both shapes. Quote it when you contact
+  support: it identifies the exact failure in our logs, and it is the fastest way
+  for us to diagnose a problem you cannot reproduce.
+</Callout>
 
 ## Common Validation Errors
 

@@ -1,6 +1,48 @@
-import { Steps } from "nextra/components";
+import { Callout, Steps } from "nextra/components";
 
 # Morgen API Authentication
+
+## Base URL
+
+All Morgen API endpoints are served from:
+
+```
+https://api.morgen.so
+```
+
+Endpoints are versioned with a path prefix. The current version is `v3`, so a
+full endpoint URL looks like `https://api.morgen.so/v3/events/list`.
+
+## Authenticating a request
+
+Send your API key on the `Authorization` header, prefixed with `ApiKey` and a
+single space:
+
+```
+Authorization: ApiKey <YOUR_API_KEY>
+```
+
+For example:
+
+```js
+fetch("https://api.morgen.so/v3/tasks/list", {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: "ApiKey <YOUR_API_KEY>",
+  },
+});
+```
+
+The scheme is `ApiKey`, not `Bearer`. A request with a missing or unrecognised
+`Authorization` header returns HTTP 401, and so does a request carrying a key
+that is not valid.
+
+<Callout type="warning" emoji="⚠️">
+  Access to the API also depends on your Morgen plan. If your key is valid but
+  your plan does not include API access, requests return HTTP 403 with the
+  message "Missing entitlements".
+</Callout>
 
 ## Get your API key
 

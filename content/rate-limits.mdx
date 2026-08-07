@@ -9,11 +9,15 @@ The Morgen API enforces rate limits to ensure fair usage and system stability. R
 
 | Authentication | Limit | Window |
 | :------------- | :---- | :----- |
-| API Key | 100 points | 15 minutes |
+| API Key | 300 points | 15 minutes |
 
 <JwtContent>
 
-| JWT Token | 300 requests | 15 minutes |
+| JWT Token | 500 points | 15 minutes |
+
+Every endpoint costs a JWT caller 1 point, including `/list` endpoints. The
+per-endpoint costs in the next section apply to API Key authentication only, so
+a JWT budget of 500 points is effectively 500 requests.
 
 </JwtContent>
 
@@ -32,16 +36,16 @@ Every API response includes headers to help you track your rate limit usage. The
 
 | Header | Description |
 | :----- | :---------- |
-| `RateLimit-Limit` | Maximum points/requests allowed in the current window |
-| `RateLimit-Remaining` | Points/requests remaining in the current window |
+| `RateLimit-Limit` | Maximum points allowed in the current window |
+| `RateLimit-Remaining` | Points remaining in the current window |
 | `RateLimit-Reset` | Seconds until the rate limit window resets |
 | `Retry-After` | Seconds to wait before retrying (only present when `RateLimit-Remaining` is 0) |
 
 ### Example Headers
 
 ```
-RateLimit-Limit: 100
-RateLimit-Remaining: 90
+RateLimit-Limit: 300
+RateLimit-Remaining: 290
 RateLimit-Reset: 459
 ```
 
