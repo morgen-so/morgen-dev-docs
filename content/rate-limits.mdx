@@ -15,6 +15,10 @@ The Morgen API enforces rate limits to ensure fair usage and system stability. R
 
 | JWT Token | 500 points | 15 minutes |
 
+Every endpoint costs a JWT caller 1 point, including `/list` endpoints. The
+per-endpoint costs in the next section apply to API Key authentication only, so
+a JWT budget of 500 points is effectively 500 requests.
+
 </JwtContent>
 
 ## Points System (API Key)
