@@ -243,9 +243,13 @@ for more information about the data model. Please consider the following differe
 Morgen returns some additional fields for convenience and to provide more
 information about the event: `integrationId`, `accountId`, `calendarId`,
 `baseEventId`, `masterEventId`, `masterBaseEventId`, `morgen.so:derived`,
-`morgen.so:metadata`, `morgen.so:requestVirtualRoom` and `useDefaultAlerts`.
+`morgen.so:metadata` and `useDefaultAlerts`.
 
-Each is described in the [Event Fields Reference](#event-fields-reference).
+There is also one write-only field, `morgen.so:requestVirtualRoom`, which you can
+send on create and update but will never receive back.
+
+All of them are described in the [Event Fields
+Reference](#event-fields-reference).
 
 <Callout type="warning" emoji="⚠️">
   Additional fields might be added in the future. If you are storing the event
