@@ -768,6 +768,74 @@ Returns HTTP **204 No Content** on success, with an **empty response body**.
   which occurrences were affected.
 </Callout>
 
+## Errors
+
+Errors are produced by a single shared handler, so the status codes and body
+shapes below apply uniformly to every endpoint on this page, and to the rest of
+the Morgen API.
+
+| Status | When you will see it                                                                                                                                        |
+| :----- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400`  | The request failed validation: a missing or malformed field, an unknown property in the body or query string, or an ID that could not be resolved.           |
+| `401`  | The `Authorization` header is missing, malformed, or carries a key that is not valid. See [Authentication](/authentication).                                 |
+| `403`  | The key is valid but your plan does not include API access.                                                                                                  |
+| `429`  | You have exceeded your rate limit. See [Rate Limits](/rate-limits).                                                                                          |
+| `500`  | An unexpected server-side failure.                                                                                                                          |
+
+### Error body
+
+Errors that Morgen raises deliberately, which is everything in the table above
+except `500`, return this shape:
+
+```json
+{
+  "message": "Cannot apply 'all' series update mode to non-recurring events",
+  "status": 400,
+  "errorRef": "V1StGXR8Z5jd"
+}
+```
+
+| Field      | Always present | Description                                                                                                              |
+| :--------- | :------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| `message`  | Yes            | A human-readable description of the failure. Intended for logs and debugging, not for matching on programmatically.       |
+| `status`   | No             | The HTTP status code, repeated in the body. See the warning below.                                                        |
+| `errorRef` | Yes            | An identifier for this specific failure.                                                                                  |
+| `context`  | No             | Present on some errors, with extra structured detail about what failed.                                                   |
+
+Fields with no value are removed from the body entirely rather than sent as
+`null`, so do not expect a fixed set of keys.
+
+For request-validation failures, `message` is a JSON-encoded list describing each
+field that failed, so it can be long and is not a stable, human-friendly string.
+
+Unexpected errors return a shorter body, with the underlying message replaced by
+a generic one so that internal detail is not exposed:
+
+```json
+{
+  "message": "Something went wrong. Please retry or contact us at connect@morgen.so.",
+  "errorRef": "V1StGXR8Z5jd"
+}
+```
+
+<Callout type="warning" emoji="⚠️">
+  **Do not rely on `status` being present in the error body.** It appears only on
+  errors Morgen raises deliberately. On an unexpected failure the field is absent
+  entirely, so a client written as `if (body.status >= 400)` reads `undefined`,
+  the comparison is false, and the request is treated as having succeeded,
+  precisely at the moment something has actually gone wrong. **Branch on the HTTP
+  status line, and treat the body as diagnostic detail only.** Note that this is
+  not purely a `500` concern: a request whose body is not valid JSON, or which
+  exceeds the maximum payload size, is rejected before it reaches the endpoint
+  and also returns the shorter shape, despite carrying a `4xx` status line.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  Every error carries an `errorRef`, in both shapes. Quote it when you contact
+  support: it identifies the exact failure in our logs, and it is the fastest way
+  for us to diagnose a problem you cannot reproduce.
+</Callout>
+
 ## Common Validation Errors
 
 When creating or updating events, you may encounter validation errors. Here are the most common errors and how to resolve them:
