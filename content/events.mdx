@@ -207,9 +207,10 @@ The `id` field is Morgen's identifier for an event, and is what `/events/update`
   implementation detail and may change without notice.
 - **Pass it back byte for byte**, exactly as you received it. Do not URL-decode,
   re-encode, trim, or case-fold it.
-- **An `id` is only meaningful within the account it came from.** IDs are not
-  portable between accounts, and an ID from one account will be rejected with an
-  invalid ID error if used against another.
+- **An `id` is only meaningful within the account it came from.** Always pair an
+  `id` with the same `accountId` it was returned with. IDs are not portable
+  between accounts, and using one against a different account fails or resolves
+  to the wrong event rather than being silently ignored.
 - **`id` and `calendarId` are not interchangeable.** They are different kinds of
   identifier, and passing one where the other is expected fails.
 - **`uid` is not the `id`.** `uid` is the provider's iCalendar UID and is not
