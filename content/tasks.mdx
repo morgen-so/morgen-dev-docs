@@ -159,6 +159,61 @@ The `task` object has the same shape as an entry in `/tasks/list`, see [Task
 Fields Reference](#task-fields-reference). Fields with no value are omitted
 rather than returned as `null`, so the exact set of keys varies by task.
 
+### Deleted and unknown tasks
+
+This endpoint returns HTTP **200** in every case, including for a task that no
+longer exists. It never returns `404`. The three outcomes are distinguished by
+the body:
+
+| Case                              | Response                                                        |
+| :-------------------------------- | :-------------------------------------------------------------- |
+| The task exists                   | `200`, the task under `data.task`, with no `deleted` field       |
+| The task was deleted              | `200`, the task under `data.task`, with **`"deleted": true`**    |
+| The ID is unknown, or not yours   | `200`, `data.task` set to `null`                                 |
+
+```json
+{
+  "data": {
+    "task": {
+      "@type": "Task",
+      "id": "fb0ff56a-24f0-40d0-844a-14c6de79c576",
+      "title": "Review quarterly report",
+      "progress": "needs-action",
+      "deleted": true,
+      "integrationId": "morgen"
+    },
+    "labelDefs": []
+  }
+}
+```
+
+Deleting a task does not remove the record, so a deleted task stays readable
+indefinitely and keeps the field values it had, including its `progress`. The
+`deleted` flag is what marks it, and it is added alongside the existing fields
+rather than replacing them.
+
+#### Verifying that a task was deleted
+
+Read the task back by ID and check `deleted`:
+
+1. `POST /v3/tasks/delete` returns **204**.
+2. `GET /v3/tasks?id=<same id>` returns **200** with `"deleted": true`.
+
+<Callout type="warning" emoji="⚠️">
+  **Do not verify a deletion by a `404`, and do not verify it by absence from
+  `/tasks/list`.** This endpoint never returns `404`, so a check written that way
+  reports every successful deletion as a failure. Absence from `/tasks/list` does
+  not prove deletion either, since that endpoint returns only open tasks: a
+  merely completed task is missing too, as is anything past the `limit`.
+</Callout>
+
+<Callout type="info" emoji="💡">
+  Note the asymmetry with events, where deletion is applied at the connected
+  calendar rather than recorded on a Morgen document: there, a deleted event
+  returns `404` from [Get an event](/events#get-an-event). Tasks return `200` with
+  a flag, events return `404`.
+</Callout>
+
 ## Create a task
 
 Create a new task in Morgen.
@@ -300,7 +355,9 @@ Returns HTTP 204 No Content on success.
 
 ## Delete a task
 
-Delete a task permanently.
+Delete a task. The record is retained and marked as deleted rather than being
+removed, so the task remains readable by ID with a `deleted` flag. See [Deleted
+and unknown tasks](#deleted-and-unknown-tasks).
 
 ```js
 fetch("https://api.morgen.so/v3/tasks/delete", {
@@ -323,7 +380,14 @@ fetch("https://api.morgen.so/v3/tasks/delete", {
 
 ### Response
 
-Returns HTTP 204 No Content on success.
+Returns HTTP **204 No Content** on success, with an empty response body.
+
+<Callout type="info" emoji="💡">
+  **Deleting is idempotent.** Deleting a task that is already deleted returns
+  `204` again, so a repeated delete is not a way to test whether a task still
+  exists. An ID that never existed is rejected with `400 "Invalid task id"`,
+  not `404`. Deleting a parent task also deletes its subtasks.
+</Callout>
 
 ## Close a task
 
