@@ -347,6 +347,58 @@ The event has the same shape as the entries returned by `/events/list`, see
   Limits](/rate-limits) for details.
 </Callout>
 
+### Deleted and unknown events
+
+An event that cannot be retrieved returns HTTP **404**. It does not return `200`
+with a null or empty `event`:
+
+```json
+{
+  "message": "Cancelled events cannot be retrieved from Google",
+  "status": 404,
+  "errorRef": "V1StGXR8Z5jd"
+}
+```
+
+The same `404` covers every case where the event is not there:
+
+- it was deleted, by you or from the calendar directly
+- it was cancelled at the provider
+- the ID never existed on this account
+
+The exact `message` varies by provider and by whether the provider still holds a
+cancelled copy, so treat it as diagnostic detail and branch on the status line.
+
+This endpoint reads the connected calendar directly rather than a copy held by
+Morgen, so the response reflects the provider's state at the moment you ask.
+
+<Callout type="info" emoji="💡">
+  **A `404` here means absence, not "try again later".** Transient conditions
+  surface as different codes: a provider outage returns `5xx`, a rate limit
+  returns `429`, and an expired or revoked calendar connection returns `401` or
+  `403`. None of them degrade into a `404`, so you do not need a retry loop to
+  distinguish a deleted event from a temporarily unreachable one.
+</Callout>
+
+#### Verifying that an event was deleted
+
+To confirm a deletion, read the event back by ID and assert on the pair:
+
+1. `POST /v3/events/delete` returns **204**.
+2. `GET /v3/events?id=<same id>` returns **404**.
+
+Both steps matter. The `204` is the success signal for the deletion itself. The
+`404` confirms the event is no longer retrievable, but on its own it does not
+tell you that *your* delete caused it, since an unknown ID and an
+already-cancelled event return the same status.
+
+<Callout type="warning" emoji="⚠️">
+  **Do not verify a deletion by absence from `/events/list`.** That endpoint
+  requires a `start` and `end` window and omits cancelled events, so a missing
+  event may have been deleted, or may simply fall outside your window or outside
+  the calendars you passed in `calendarIds`. Read back by ID instead.
+</Callout>
+
 ## Create an event
 
 Morgen offers an endpoint to create events in a given calendar.
@@ -770,6 +822,16 @@ Returns HTTP **204 No Content** on success, with an **empty response body**.
   which occurrences were affected.
 </Callout>
 
+<Callout type="warning" emoji="⚠️">
+  **Deleting is not idempotent.** Deleting an event that is already deleted
+  returns **404**, not another `204`. The endpoint reads the event before
+  removing it, and that read fails on an event the provider has already
+  cancelled. Cleanup code that may run twice, and retries of a delete that timed
+  out, should therefore treat a `404` from this endpoint as success: it means the
+  event is gone. Note that this differs from [deleting a
+  task](/tasks#delete-a-task), where a repeated delete returns `204` again.
+</Callout>
+
 ## Errors
 
 Errors are produced by a single shared handler, so the status codes and body
@@ -781,6 +843,7 @@ the Morgen API.
 | `400`  | The request failed validation: a missing or malformed field, an unknown property in the body or query string, or an ID that could not be resolved.           |
 | `401`  | The `Authorization` header is missing, malformed, or carries a key that is not valid. See [Authentication](/authentication).                                 |
 | `403`  | The key is valid but your plan does not include API access.                                                                                                  |
+| `404`  | The event could not be retrieved from the connected calendar: it was deleted or cancelled, or the ID never existed on this account. Returned by [Get an event](#get-an-event) and by a repeated [Delete](#delete-an-event). |
 | `429`  | You have exceeded your rate limit. See [Rate Limits](/rate-limits).                                                                                          |
 | `500`  | An unexpected server-side failure.                                                                                                                          |
 
