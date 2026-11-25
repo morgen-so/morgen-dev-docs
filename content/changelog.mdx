@@ -4,7 +4,7 @@ We aim at not making breaking changes within each major version of the API. Howe
 
 ### November 25, 2026
 
-- `POST /v3/tasks/close` and `POST /v3/tasks/reopen` no longer accept `occurrenceStart`. A non-null value returns HTTP 400. To complete or reopen one scheduled session of a task, set `morgen.so:metadata.progress` with `POST /v3/events/update`. See [Completing a Task Session or Occurrence](/events#completing-a-task-session-or-occurrence).
+- `POST /v3/tasks/close` and `POST /v3/tasks/reopen` no longer accept `occurrenceStart`. To complete or reopen one scheduled session or occurrence, set `morgen.so:metadata.progress` with `POST /v3/events/update`. See [Completing a Task Session or Occurrence](/events#completing-a-task-session-or-occurrence).
 
 ### January 9, 2026
 

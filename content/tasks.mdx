@@ -415,10 +415,9 @@ fetch("https://api.morgen.so/v3/tasks/close", {
 <Callout type="info" emoji="💡">
   Closing a task always closes the whole task. Each occurrence of a recurring
   task is a separate task: closing one closes that occurrence and creates the
-  next one. To complete only one scheduled session of a task, update its event
-  instead, see [Completing a Task Session or
-  Occurrence](/events#completing-a-task-session-or-occurrence). The
-  `occurrenceStart` field is no longer supported and returns HTTP 400.
+  next one. To complete only one scheduled session or occurrence, update its
+  event instead, see [Completing a Task Session or
+  Occurrence](/events#completing-a-task-session-or-occurrence).
 </Callout>
 
 ### Response
@@ -450,9 +449,8 @@ fetch("https://api.morgen.so/v3/tasks/reopen", {
 
 <Callout type="info" emoji="💡">
   Reopening a task always reopens the whole task. To reopen only one scheduled
-  session of a task, update its event instead, see [Completing a Task Session or
-  Occurrence](/events#completing-a-task-session-or-occurrence). The
-  `occurrenceStart` field is no longer supported and returns HTTP 400.
+  session or occurrence, update its event instead, see [Completing a Task
+  Session or Occurrence](/events#completing-a-task-session-or-occurrence).
 </Callout>
 
 ### Response
@@ -489,20 +487,6 @@ priority must not be less than 0
 **Cause**: Priority value is outside the valid range.
 
 **Solution**: Use a value between 0 and 9, where 0 is undefined and 1 is highest priority.
-
----
-
-### Unsupported occurrenceStart
-
-**Error Message**:
-
-```
-occurrenceStart is no longer supported. To complete or reopen a single session or occurrence, update the event's morgen.so:metadata.progress via /v3/events/update.
-```
-
-**Cause**: The request to `/v3/tasks/close` or `/v3/tasks/reopen` has a non-null `occurrenceStart`.
-
-**Solution**: To close or reopen the whole task, send only `id`. To complete or reopen one scheduled session, update its event, see [Completing a Task Session or Occurrence](/events#completing-a-task-session-or-occurrence).
 
 ---
 
