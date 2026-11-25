@@ -198,7 +198,7 @@ returned as-is.
 | `google.com:colorId`     | String  | Google Calendar only. Read/write, see [Google Calendar Color ID](#google-calendar-color-id).                                                                 |
 | `google.com:hangoutLink` | String  | Google Calendar only. Read-only Google Meet link.                                                                                                           |
 | `morgen.so:derived`      | Object  | Read-only fields derived from the rest of the event, for example a virtual room URL found in the description.                                                |
-| `morgen.so:metadata`     | Object  | Read-only Morgen-specific metadata: `categoryId`, `categoryName`, `categoryColor` (hex), and the task fields `progress` (`"needs-action"` or `"completed"`) and `taskId`. An event with a `taskId` is displayed as a task in Morgen. |
+| `morgen.so:metadata`     | Object  | Morgen-specific metadata: `categoryId`, `categoryName`, `categoryColor` (hex), and the task fields `progress` (`"needs-action"` or `"completed"`) and `taskId`. An event with a `taskId` is displayed as a task in Morgen. `progress` can be set on update, see [Completing a Task Session or Occurrence](#completing-a-task-session-or-occurrence). All other fields are read-only. |
 | `morgen.so:requestVirtualRoom` | String | Write-only. Requests creation of a virtual meeting room: `"default"`, `"googleMeet"` or `"microsoftTeams"`. See [Request the creation of a virtual meeting room](#request-the-creation-of-a-virtual-meeting-room). |
 
 ### Event IDs
@@ -734,6 +734,40 @@ Participants can be updated using the `/events/update` endpoint with patch opera
   }
 }
 ```
+
+#### Completing a Task Session or Occurrence
+
+An event with a `taskId` in `morgen.so:metadata` is a scheduled session of that
+task. To mark one session, or one occurrence of a recurring session, as
+completed, update the event and set `morgen.so:metadata.progress` to
+`"completed"`. To undo, set it to `"needs-action"`. This changes only that
+event. To complete the whole task, use [Close a task](/tasks#close-a-task).
+
+```js
+fetch("https://api.morgen.so/v3/events/update", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    Authorization: "ApiKey <API_KEY>",
+  },
+  body: JSON.stringify({
+    accountId: "640a62c9aa5b7e06cf420000",
+    calendarId: "WyI2NDBhNjJjOW...",
+    id: "WyJhbmNvbmEubXJjQGdtYWl",
+    "morgen.so:metadata": {
+      progress: "completed",
+    },
+  }),
+});
+```
+
+<Callout type="info" emoji="💡">
+  For a progress-only update, do not send `start`, `duration`, `timeZone` or
+  `showWithoutTime`. If you send one of them, you must send all four.
+</Callout>
+
+When you read the event back, `morgen.so:metadata.progress` shows the current
+value.
 
 ## Request the creation of a virtual meeting room
 

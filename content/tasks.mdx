@@ -408,10 +408,17 @@ fetch("https://api.morgen.so/v3/tasks/close", {
 
 ### Request Body Fields
 
-| Field             | Type   | Required | Description                                                                 |
-| :---------------- | :----- | :------- | :-------------------------------------------------------------------------- |
-| `id`              | String | Yes      | The Morgen ID of the task to close.                                         |
-| `occurrenceStart` | String | No       | For recurring tasks: ISO 8601 datetime of the specific occurrence to close. |
+| Field | Type   | Required | Description                         |
+| :---- | :----- | :------- | :---------------------------------- |
+| `id`  | String | Yes      | The Morgen ID of the task to close. |
+
+<Callout type="info" emoji="💡">
+  Closing a task always closes the whole task. Each occurrence of a recurring
+  task is a separate task: closing one closes that occurrence and creates the
+  next one. To complete only one scheduled session or occurrence, update its
+  event instead, see [Completing a Task Session or
+  Occurrence](/events#completing-a-task-session-or-occurrence).
+</Callout>
 
 ### Response
 
@@ -436,10 +443,15 @@ fetch("https://api.morgen.so/v3/tasks/reopen", {
 
 ### Request Body Fields
 
-| Field             | Type   | Required | Description                                                                  |
-| :---------------- | :----- | :------- | :--------------------------------------------------------------------------- |
-| `id`              | String | Yes      | The Morgen ID of the task to reopen.                                         |
-| `occurrenceStart` | String | No       | For recurring tasks: ISO 8601 datetime of the specific occurrence to reopen. |
+| Field | Type   | Required | Description                          |
+| :---- | :----- | :------- | :----------------------------------- |
+| `id`  | String | Yes      | The Morgen ID of the task to reopen. |
+
+<Callout type="info" emoji="💡">
+  Reopening a task always reopens the whole task. To reopen only one scheduled
+  session or occurrence, update its event instead, see [Completing a Task
+  Session or Occurrence](/events#completing-a-task-session-or-occurrence).
+</Callout>
 
 ### Response
 
