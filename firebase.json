@@ -3,6 +3,15 @@
     "site": "morgen-docs",
     "public": "out",
     "cleanUrls": true,
+    "headers": [
+      {
+        "source": "**/*.md",
+        "headers": [
+          { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+          { "key": "X-Robots-Tag", "value": "noindex" }
+        ]
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
